@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2b1f1d" />
+    <title>Admin Sign In | Bloom Coffee</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="admin-page">
+    <div class="admin-topbar">
+      <a class="admin-brand" href="home.html">Bloom Coffee</a>
+      <a class="admin-home-link" href="home.html">Back to the shop</a>
+    </div>
+
+    <main class="admin-layout">
+      <section class="admin-intro" aria-label="Bloom Coffee staff access">
+        <div class="admin-intro-content">
+          <p class="admin-eyebrow">BLOOM COFFEE / STAFF</p>
+          <p class="admin-intro-title">
+            Willow Street,<br />behind the counter.
+          </p>
+          <span class="admin-intro-rule" aria-hidden="true"></span>
+          <p class="admin-intro-note">
+            Private access for the people who keep the coffee flowing.
+          </p>
+        </div>
+      </section>
+
+      <section class="admin-form-panel" aria-labelledby="admin-title">
+        <div id="login-view">
+          <p class="admin-eyebrow admin-eyebrow-dark">STAFF PORTAL</p>
+          <h1 id="admin-title">Sign in</h1>
+          <p class="admin-form-description">
+            Use your authorized admin account to continue.
+          </p>
+
+          <form id="admin-login-form" novalidate>
+            <div class="admin-field">
+              <label for="admin-email">Email address</label>
+              <input
+                id="admin-email"
+                name="email"
+                type="email"
+                autocomplete="username"
+                inputmode="email"
+                required
+              />
+            </div>
+            <div class="admin-field">
+              <label for="admin-password">Password</label>
+              <input
+                id="admin-password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <p
+              id="login-message"
+              class="admin-message"
+              role="status"
+              aria-live="polite"
+            ></p>
+            <button class="admin-submit" type="submit">
+              Sign in <span aria-hidden="true">&rarr;</span>
+            </button>
+          </form>
+        </div>
+
+        <div id="signed-in-view" hidden>
+          <p class="admin-eyebrow admin-eyebrow-dark">STAFF PORTAL</p>
+          <h1 id="signed-in-title">You are signed in</h1>
+          <p class="admin-form-description">
+            Authenticated as <strong id="signed-in-email"></strong>.
+          </p>
+          <p
+            id="session-message"
+            class="admin-message"
+            role="status"
+            aria-live="polite"
+          ></p>
+          <button id="admin-sign-out" class="admin-submit" type="button">
+            Sign out <span aria-hidden="true">&rarr;</span>
+          </button>
+        </div>
+
+        <p class="admin-panel-footer">
+          Bloom Coffee <span aria-hidden="true">/</span> Willow Street
+        </p>
+      </section>
+    </main>
+
+    <script src="admin.js" defer></script>
+  </body>
+</html>
