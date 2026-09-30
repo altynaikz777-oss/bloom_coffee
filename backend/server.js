@@ -1,7 +1,9 @@
-import pg from "pg";
-import parse from "co-body";
-import http from "node:http";
-import { error } from "node:console";
+
+import pg from 'pg';
+import parse from 'co-body';
+import http from 'node:http';
+import { error } from 'node:console';
+
 
 const { Pool } = pg;
 
@@ -127,3 +129,4 @@ const server = http.createServer(async (req, res) => {
 server.listen(3000, () => {
   console.log(`Server is listening on port 3000`);
 });
+
