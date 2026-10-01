@@ -3,15 +3,15 @@ import pg from "pg";
 import parse from "co-body";
 import http from "node:http";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 const { Pool } = pg;
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "postgres",
-  port: 5432,
+  user: process.env.USER,
+  host: process.env.HOST,
+  database: process.env.DATABASE,
+  port: process.env.PORT,
+  password: process.env.PASSWORD,
 });
 
 function sendJSON(res, statusCode, data) {
@@ -19,21 +19,16 @@ function sendJSON(res, statusCode, data) {
   res.end(JSON.stringify(data));
 }
 
-async function getUsers() {
-  const result = await pool.query("SELECT id, username, email FROM accounts");
-  return result.rows;
+function checkAdmin(req) {
+  const adminPassword = req.headers["x-admin-password"];
+  return adminPassword === process.env.ADMIN_PASSWORD;
 }
 
-function checkAdmin(req) {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader) return null;
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.is_admin ? decoded : null;
-  } catch {
-    return null;
-  }
+async function getUsers() {
+  const result = await pool.query(
+    "SELECT id, username, email, role FROM accounts",
+  );
+  return result.rows;
 }
 
 const server = http.createServer(async (req, res) => {
@@ -42,7 +37,10 @@ const server = http.createServer(async (req, res) => {
     "Access-Control-Allow-Methods",
     "PUT, DELETE, POST, GET, OPTIONS",
   );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, x-admin-password",
+  );
   res.setHeader("Content-Type", "application/json");
 
   if (req.method === "OPTIONS") {
@@ -83,7 +81,7 @@ const server = http.createServer(async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const result = await pool.query(
-        "INSERT INTO accounts (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email",
+        "INSERT INTO accounts (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email, role",
         [username, hashedPassword, email],
       );
 
@@ -103,7 +101,9 @@ const server = http.createServer(async (req, res) => {
       const { email, password } = body;
 
       if (!email || !password) {
-        return sendJSON(res, 400, { error: "Write your email and password!" });
+        return sendJSON(res, 400, {
+          error: "Write your email and password!",
+        });
       }
 
       const userResult = await pool.query(
@@ -139,20 +139,20 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  const parts = req.url.split("/");
-  const id = Number(parts[2]);
-  const hasId =
-    parts[1] === "accounts" &&
-    parts.length === 3 &&
-    Number.isInteger(id) &&
-    id > 0;
+  const accountParts = req.url.split("/");
+  const accountId = Number(accountParts[2]);
+  const hasAccountId =
+    accountParts[1] === "accounts" &&
+    accountParts.length === 3 &&
+    Number.isInteger(accountId) &&
+    accountId > 0;
 
-  if (hasId && req.method === "PUT") {
+  if (hasAccountId && req.method === "PUT") {
     try {
       const body = await parse.json(req);
       const { rows } = await pool.query(
-        `UPDATE accounts SET username = $1 WHERE id = $2 RETURNING id, username`,
-        [body.username || null, id],
+        `UPDATE accounts SET username = $1 WHERE id = $2 RETURNING id, username, role`,
+        [body.username || null, accountId],
       );
 
       if (rows.length === 0) {
@@ -166,11 +166,11 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  if (hasId && req.method === "DELETE") {
+  if (hasAccountId && req.method === "DELETE") {
     try {
       const { rowCount } = await pool.query(
         "DELETE FROM accounts WHERE id = $1",
-        [id],
+        [accountId],
       );
 
       if (rowCount === 0) {
@@ -196,8 +196,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.url === "/products" && req.method === "POST") {
-    const admin = checkAdmin(req);
-    if (!admin) {
+    if (!checkAdmin(req)) {
       return sendJSON(res, 403, { error: "Admin access required" });
     }
     try {
@@ -228,43 +227,7 @@ const server = http.createServer(async (req, res) => {
     productId > 0;
 
   if (hasProductId && req.method === "PUT") {
-    try {
-      const body = await parse.json(req);
-      const { name, price, description, image } = body;
-
-      const result = await pool.query(
-        "UPDATE products SET name = $1, price = $2, description = $3, image = $4 WHERE id = $5 RETURNING *",
-        [name, price, description, image, productId],
-      );
-
-      if (result.rows.length === 0) {
-        return sendJSON(res, 404, { error: "Product not found" });
-      }
-
-      return sendJSON(res, 200, {
-        message: "Product updated",
-        product: result.rows[0],
-      });
-    } catch (err) {
-      console.error("Error updating product:", err);
-      return sendJSON(res, 500, { error: "Server error" });
-    }
-  }
-
-  if (hasProductId && req.method === "DELETE") {
-  }
-
-  const productParts = req.url.split("/");
-  const productId = Number(productParts[2]);
-  const hasProductId =
-    productParts[1] === "products" &&
-    productParts.length === 3 &&
-    Number.isInteger(productId) &&
-    productId > 0;
-
-  if (hasProductId && req.method === "PUT") {
-    const admin = checkAdmin(req);
-    if (!admin) {
+    if (!checkAdmin(req)) {
       return sendJSON(res, 403, { error: "Admin access required" });
     }
     try {
@@ -291,8 +254,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (hasProductId && req.method === "DELETE") {
-    const admin = checkAdmin(req);
-    if (!admin) {
+    if (!checkAdmin(req)) {
       return sendJSON(res, 403, { error: "Admin access required" });
     }
     try {
@@ -310,6 +272,7 @@ const server = http.createServer(async (req, res) => {
       return sendJSON(res, 500, { error: "Server error" });
     }
   }
+
   return sendJSON(res, 404, { error: "Route not found!" });
 });
 

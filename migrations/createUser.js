@@ -14,7 +14,7 @@ const pool = new Pool({
 async function createUsersTable() {
   try {
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
+      CREATE TABLE IF NOT EXISTS accounts (
         id SERIAL PRIMARY KEY,
         username VARCHAR(50),
         password TEXT,
