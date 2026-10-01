@@ -184,7 +184,6 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  if (req.url === "/products" && req.method === "POST") {
   if (req.url === "/products" && req.method === "GET") {
     try {
       const result = await pool.query("SELECT * FROM products ORDER BY id");
