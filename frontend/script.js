@@ -73,7 +73,6 @@ async function handleRegister(event) {
       data.error || "Something went wrong";
     return;
   }
-
   console.log(data);
   document.getElementById("registerMessage").textContent = "Account created!";
 }
