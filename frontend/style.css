@@ -129,6 +129,7 @@ header {
   align-items: center;
   padding: 20px 30px;
   height: 80px;
+  padding: 20px 70px;
   background-color: #2b1f1d;
   position: sticky;
   top: 0;
@@ -241,7 +242,7 @@ footer a {
 .hero-content {
   position: relative;
   left: 200px;
-  top: -210px;
+  top: -190px;
   max-width: 500px;
   color: #ffffff;
 }
@@ -770,6 +771,7 @@ footer a {
   max-width: 440px;
   margin-bottom: 150px;
 }
+
 .admin-eyebrow {
   margin-bottom: 18px;
   color: #e1cdb5;
