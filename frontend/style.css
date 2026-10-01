@@ -125,6 +125,7 @@ body {
   display: none;
 }
 
+
 header {
   display: flex;
   justify-content: space-between;
@@ -777,8 +778,6 @@ footer a {
   padding: clamp(32px, 6vw, 76px);
   background: var(--admin-paper);
   color: var(--admin-ink);
-  
-
 
 }
 
@@ -789,7 +788,6 @@ footer a {
 
 .admin-eyebrow-dark {
   margin-bottom: 12px;
-  color: #3e342d;
 }
 
 .admin-form-panel h1 {
@@ -827,8 +825,6 @@ footer a {
   border: 1px solid var(--admin-line);
   border-radius: 0;
   background: rgba(255, 255, 255, 0.24);
-  border: 2px solid rgba(20, 16, 14, 0.2);
-  border-radius: 10px;
   color: var(--admin-ink);
   font: inherit;
 }
@@ -855,17 +851,12 @@ footer a {
   padding: 0 16px;
   border: 1px solid var(--admin-ink);
   background: var(--admin-ink);
-  color: #2f261c;
-  font: inherit;
-  cursor: pointer;
-  border-radius: 10px;
-  border: 2px solid  rgba(20, 16, 14, 0.2);
 }
+
 
 .admin-submit:hover:not(:disabled) {
   background: #49352e;
-  color: #cbbba8;
-}
+  }
 
 .admin-submit:focus-visible {
   outline: 2px solid var(--admin-ink);
