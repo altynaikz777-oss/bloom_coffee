@@ -1,7 +1,7 @@
 let grid = document.querySelector(".grid");
 document.addEventListener("DOMContentLoaded", function () {
   async function add() {
-    let url = `./data.json`;
+    let url = "./data.json";
     let promise = await fetch(url);
     let data = await promise.json();
     console.log(data);

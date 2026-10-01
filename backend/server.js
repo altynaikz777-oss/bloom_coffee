@@ -124,20 +124,13 @@ const server = http.createServer(async (req, res) => {
         return sendJSON(res, 400, { error: "Wrong password!" });
       }
 
-      const token = jwt.sign(
-        { id: user.id, email: user.email, is_admin: user.is_admin },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" },
-      );
-
       return sendJSON(res, 200, {
         message: "Successfully logged in!",
-        token,
         user: {
           id: user.id,
           username: user.username,
           email: user.email,
-          is_admin: user.is_admin,
+          role: user.role,
         },
       });
     } catch (err) {
@@ -191,6 +184,7 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  if (req.url === "/products" && req.method === "POST") {
   if (req.url === "/products" && req.method === "GET") {
     try {
       const result = await pool.query("SELECT * FROM products ORDER BY id");
@@ -223,6 +217,41 @@ const server = http.createServer(async (req, res) => {
       console.error("Error adding product:", err);
       return sendJSON(res, 500, { error: "Server error" });
     }
+  }
+
+  const productParts = req.url.split("/");
+  const productId = Number(productParts[2]);
+  const hasProductId =
+    productParts[1] === "products" &&
+    productParts.length === 3 &&
+    Number.isInteger(productId) &&
+    productId > 0;
+
+  if (hasProductId && req.method === "PUT") {
+    try {
+      const body = await parse.json(req);
+      const { name, price, description, image } = body;
+
+      const result = await pool.query(
+        "UPDATE products SET name = $1, price = $2, description = $3, image = $4 WHERE id = $5 RETURNING *",
+        [name, price, description, image, productId],
+      );
+
+      if (result.rows.length === 0) {
+        return sendJSON(res, 404, { error: "Product not found" });
+      }
+
+      return sendJSON(res, 200, {
+        message: "Product updated",
+        product: result.rows[0],
+      });
+    } catch (err) {
+      console.error("Error updating product:", err);
+      return sendJSON(res, 500, { error: "Server error" });
+    }
+  }
+
+  if (hasProductId && req.method === "DELETE") {
   }
 
   const productParts = req.url.split("/");
