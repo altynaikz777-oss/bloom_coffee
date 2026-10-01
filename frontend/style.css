@@ -46,25 +46,25 @@ body {
 .modal-close:hover {
   color: #241510;
 }
-.btnLogIn{
+.btnLogIn {
   background-color: #241918;
   color: #b8a795;
   border: 2px solid #241918;
   padding: 10px;
   border-radius: 10px;
 }
-.btnLogIn:hover{
+.btnLogIn:hover {
   color: #3b2b27;
   background-color: transparent;
 }
-.btnRegister{
+.btnRegister {
   background-color: #241918;
   color: #b8a795;
   border: 2px solid #241918;
   padding: 10px;
   border-radius: 10px;
 }
-.btnRegister:hover{
+.btnRegister:hover {
   color: #3b2b27;
   background-color: transparent;
 }
@@ -93,7 +93,6 @@ body {
 
 .tab-btn:hover {
   color: #241510;
-  
 }
 
 .modal-form {
@@ -101,7 +100,6 @@ body {
   flex-direction: column;
   gap: 0.9rem;
 }
-
 
 .modal-form label {
   font-size: 0.85rem;
@@ -124,7 +122,6 @@ body {
 .modal-form[hidden] {
   display: none;
 }
-
 
 header {
   display: flex;
@@ -156,7 +153,6 @@ nav a:hover {
   color: #ffffff;
 }
 
-
 footer {
   display: flex;
   justify-content: space-between;
@@ -182,7 +178,6 @@ footer a {
   text-decoration: none;
   display: block;
 }
-
 
 .hero {
   position: relative;
@@ -210,7 +205,8 @@ footer a {
 
 .hero-content {
   position: relative;
-  top: -120px;
+  left: 200px;
+  top: -190px;
   max-width: 500px;
   color: #ffffff;
 }
@@ -399,7 +395,6 @@ footer a {
   border-radius: 20px;
   overflow: hidden;
 }
-
 
 .card img {
   width: 100%;
@@ -778,7 +773,6 @@ footer a {
   padding: clamp(32px, 6vw, 76px);
   background: var(--admin-paper);
   color: var(--admin-ink);
-
 }
 
 .admin-form-panel > div {
@@ -853,10 +847,9 @@ footer a {
   background: var(--admin-ink);
 }
 
-
 .admin-submit:hover:not(:disabled) {
   background: #49352e;
-  }
+}
 
 .admin-submit:focus-visible {
   outline: 2px solid var(--admin-ink);

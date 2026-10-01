@@ -39,13 +39,13 @@ function switchTab(tab) {
   const tabLoginBtn = document.getElementById("tabLoginBtn");
 
   if (tab === "register") {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'flex';
+    loginForm.style.display = "none";
+    registerForm.style.display = "flex";
     tabRegisterBtn.classList.add("active");
     tabLoginBtn.classList.remove("active");
   } else {
-    loginForm.style.display = 'flex';
-    registerForm.style.display = 'none';
+    loginForm.style.display = "flex";
+    registerForm.style.display = "none";
     tabLoginBtn.classList.add("active");
     tabRegisterBtn.classList.remove("active");
   }
@@ -57,19 +57,20 @@ async function handleRegister(event) {
   const person = {
     name: document.getElementById("regUsername").value,
     email: document.getElementById("regEmail").value,
-    password: document.getElementById("regPassword").value
+    password: document.getElementById("regPassword").value,
   };
 
-  const response = await fetch('http://localhost:3100/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(person)
+  const response = await fetch("http://localhost:3100/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(person),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    document.getElementById("registerMessage").textContent = data.error || "Something went wrong";
+    document.getElementById("registerMessage").textContent =
+      data.error || "Something went wrong";
     return;
   }
 
@@ -81,22 +82,31 @@ async function handleLogin(event) {
 
   const person = {
     email: document.getElementById("loginEmail").value,
-    password: document.getElementById("loginPassword").value
+    password: document.getElementById("loginPassword").value,
   };
 
-  const response = await fetch('http://localhost:3100/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(person)
+  const response = await fetch("http://localhost:3100/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(person),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    document.getElementById("loginMessage").textContent = data.error || "Something went wrong";
+    document.getElementById("loginMessage").textContent =
+      data.error || "Something went wrong";
     return;
   }
 
   console.log(data);
   document.getElementById("loginMessage").textContent = "Logged in!";
 }
+
+let addbtns = document.querySelectorAll(".btn-add");
+addbtns.forEach((element) => {
+  element.addEventListener("click", function () {
+    element.textContent =
+      element.textContent === "Added" ? "Add to cart" : "Added";
+  });
+});
