@@ -39,6 +39,7 @@ async function insertCard() {
 
     const res = await pool.query(query, values);
     console.log("Food succcessfully added:", res.rows[0]);
+
   } catch (err) {
     console.error("Error:", err);
   } finally {

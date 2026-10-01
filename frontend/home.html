@@ -22,12 +22,18 @@
         <a href="menu.html">Menu</a>
         <a href="contact.html">Contact</a>
         <a href="cart.html">Cart</a>
-        <a href="admin.html"
-          ><img
+
+        <button
+          id="btnSignIn"
+          onclick="openModal()"
+          style="background-color: transparent; border: 0; padding: 20px"
+        >
+          <img
             style="width: 28px; opacity: 0.9; padding-top: 4px"
             src="./images/1000_F_433520193_85OMr4384m2WI8I0vxvge9dcvlm2xqqv.png"
             alt=""
-        /></a>
+          />
+        </button>
       </nav>
     </header>
 
@@ -80,7 +86,7 @@
             </p>
             <div class="card-footer">
               <span class="price">$5.25</span>
-              <a href="cart.html" class="btn-add">Add to cart</a>
+              <button class="btn-add">Add to cart</button>
             </div>
           </div>
         </div>
@@ -95,7 +101,7 @@
             </p>
             <div class="card-footer">
               <span class="price">$5.75</span>
-              <a href="cart.html" class="btn-add">Add to cart</a>
+              <button class="btn-add">Add to cart</button>
             </div>
           </div>
         </div>
@@ -110,11 +116,10 @@
             </p>
             <div class="card-footer">
               <span class="price">$4.75</span>
-              <a href="cart.html" class="btn-add">Add to cart</a>
+              <button class="btn-add">Add to cart</button>
             </div>
           </div>
         </div>
-
         <!-- Item 4 -->
         <div class="card">
           <img src="./images/chai.jpg" alt="Chai Latte" />
@@ -125,7 +130,7 @@
             </p>
             <div class="card-footer">
               <span class="price">$5.25</span>
-              <a href="cart.html" class="btn-add">Add to cart</a>
+              <button class="btn-add">Add to cart</button>
             </div>
           </div>
         </div>
@@ -140,7 +145,7 @@
             </p>
             <div class="card-footer">
               <span class="price">$4.50</span>
-              <a href="cart.html" class="btn-add">Add to cart</a>
+              <button class="btn-add">Add to cart</button>
             </div>
           </div>
         </div>
@@ -155,14 +160,70 @@
             </p>
             <div class="card-footer">
               <span class="price">$4.25</span>
-              <a href="cart.html" class="btn-add">Add to cart</a>
+              <button class="btn-add">Add to cart</button>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <div class="modal-overlay" id="accountModal">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">
+          &times;
+        </button>
 
+        <div class="modal-tabs">
+          <button
+            class="tab-btn active"
+            id="tabRegisterBtn"
+            onclick="switchTab('register')"
+          >
+            Register
+          </button>
+          <button class="tab-btn" id="tabLoginBtn" onclick="switchTab('login')">
+            Log in
+          </button>
+        </div>
+
+        <form
+          id="registerForm"
+          class="modal-form"
+          onsubmit="handleRegister(event)"
+        >
+          <label for="regUsername">Username</label>
+          <input type="text" id="regUsername" required />
+
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" required />
+
+          <label for="regPassword">Password</label>
+          <input type="password" id="regPassword" required />
+
+          <button type="submit" class="btnRegister btn-solid">
+            Create account
+          </button>
+          <p class="modal-message" id="registerMessage"></p>
+        </form>
+
+        <form
+          id="loginForm"
+          class="modal-form"
+          onsubmit="handleLogin(event)"
+          hidden
+        >
+          <label for="loginEmail">Email</label>
+          <input type="text" id="loginEmail" required />
+
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required />
+
+          <button type="submit" class="btnLogIn btn-solid">Log in</button>
+          <p class="modal-message" id="loginMessage"></p>
+        </form>
+      </div>
+    </div>
     <!-- Footer -->
+
     <footer>
       <div>
         <h3>Bloom Coffee</h3>
