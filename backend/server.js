@@ -1,7 +1,9 @@
+import "dotenv/config";
 import pg from "pg";
 import parse from "co-body";
 import http from "node:http";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const { Pool } = pg;
 
@@ -20,6 +22,18 @@ function sendJSON(res, statusCode, data) {
 async function getUsers() {
   const result = await pool.query("SELECT id, username, email FROM accounts");
   return result.rows;
+}
+
+function checkAdmin(req) {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return null;
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded.is_admin ? decoded : null;
+  } catch {
+    return null;
+  }
 }
 
 const server = http.createServer(async (req, res) => {
@@ -110,13 +124,20 @@ const server = http.createServer(async (req, res) => {
         return sendJSON(res, 400, { error: "Wrong password!" });
       }
 
+      const token = jwt.sign(
+        { id: user.id, email: user.email, is_admin: user.is_admin },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" },
+      );
+
       return sendJSON(res, 200, {
         message: "Successfully logged in!",
+        token,
         user: {
           id: user.id,
           username: user.username,
           email: user.email,
-          role: user.role,
+          is_admin: user.is_admin,
         },
       });
     } catch (err) {
@@ -170,7 +191,21 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  if (req.url === "/products" && req.method === "GET") {
+    try {
+      const result = await pool.query("SELECT * FROM products ORDER BY id");
+      return sendJSON(res, 200, result.rows);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      return sendJSON(res, 500, { error: "Server error" });
+    }
+  }
+
   if (req.url === "/products" && req.method === "POST") {
+    const admin = checkAdmin(req);
+    if (!admin) {
+      return sendJSON(res, 403, { error: "Admin access required" });
+    }
     try {
       const body = await parse.json(req);
       const { name, category, price, description, image } = body;
@@ -199,6 +234,10 @@ const server = http.createServer(async (req, res) => {
     productId > 0;
 
   if (hasProductId && req.method === "PUT") {
+    const admin = checkAdmin(req);
+    if (!admin) {
+      return sendJSON(res, 403, { error: "Admin access required" });
+    }
     try {
       const body = await parse.json(req);
       const { name, price, description, image } = body;
@@ -223,6 +262,10 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (hasProductId && req.method === "DELETE") {
+    const admin = checkAdmin(req);
+    if (!admin) {
+      return sendJSON(res, 403, { error: "Admin access required" });
+    }
     try {
       const result = await pool.query("DELETE FROM products WHERE id = $1", [
         productId,
