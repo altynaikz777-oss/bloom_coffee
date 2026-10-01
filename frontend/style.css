@@ -127,6 +127,8 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 20px 30px;
+  height: 80px;
   padding: 20px 70px;
   background-color: #2b1f1d;
   position: sticky;
@@ -203,6 +205,40 @@ footer a {
   );
 }
 
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.316);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.426);
+}
+
+.btn-add {
+  background-color: #141211;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-add:hover {
+  background-color: #886148;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.42);
+}
+.btn-add:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
 .hero-content {
   position: relative;
   left: 200px;
@@ -470,7 +506,6 @@ footer a {
   margin-right: 25px;
   font-size: 14px;
 }
-
 .menu-tabs a.active {
   color: #ffffff;
   border-bottom: 1px solid #ffffff;
