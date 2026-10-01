@@ -18,9 +18,7 @@ function sendJSON(res, statusCode, data) {
 }
 
 async function getUsers() {
-  const result = await pool.query(
-    "SELECT id, username, email FROM accounts", 
-  );
+  const result = await pool.query("SELECT id, username, email FROM accounts");
   return result.rows;
 }
 
@@ -40,7 +38,7 @@ const server = http.createServer(async (req, res) => {
 
   if (req.url === "/read" && req.method === "GET") {
     try {
-      const data = await getUsers(); 
+      const data = await getUsers();
       return sendJSON(res, 200, data);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -137,7 +135,7 @@ const server = http.createServer(async (req, res) => {
 
   if (hasId && req.method === "PUT") {
     try {
-      const body = await parse.json(req); 
+      const body = await parse.json(req);
       const { rows } = await pool.query(
         `UPDATE accounts SET username = $1 WHERE id = $2 RETURNING id, username`,
         [body.username || null, id],
@@ -162,7 +160,7 @@ const server = http.createServer(async (req, res) => {
       );
 
       if (rowCount === 0) {
-        return sendJSON(res, 404, { error: "User not found" }); 
+        return sendJSON(res, 404, { error: "User not found" });
       }
 
       return sendJSON(res, 200, { message: "User deleted" });
@@ -172,7 +170,7 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  return sendJSON(res, 404, { error: "Route not found!" }); 
+  return sendJSON(res, 404, { error: "Route not found!" });
 });
 
 server.listen(3000, () => {
