@@ -12,6 +12,11 @@ const pool = new Pool({
   port: 5432,
 });
 
+function sendJSON(res, statusCode, data) {
+  res.statusCode = statusCode;
+  res.end(JSON.stringify(data));
+}
+
 async function getUsers() {
   const result = await pool.query("SELECT id, username, email FROM accounts");
   return result.rows;
@@ -34,11 +39,10 @@ const server = http.createServer(async (req, res) => {
   if (req.url === "/read" && req.method === "GET") {
     try {
       const data = await getUsers();
-      return res.end(JSON.stringify(data));
+      return sendJSON(res, 200, data);
     } catch (err) {
-      console.error("Error during registration:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      console.error("Error fetching users:", err);
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
@@ -48,8 +52,7 @@ const server = http.createServer(async (req, res) => {
       const { username, password, email } = body;
 
       if (!username || !password || !email) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({ error: "Fill in all fields!" }));
+        return sendJSON(res, 400, { error: "Fill in all fields!" });
       }
 
       const checkUser = await pool.query(
@@ -58,12 +61,9 @@ const server = http.createServer(async (req, res) => {
       );
 
       if (checkUser.rows.length > 0) {
-        res.statusCode = 400;
-        return res.end(
-          JSON.stringify({
-            error: "User with that email already exists!",
-          }),
-        );
+        return sendJSON(res, 400, {
+          error: "User with that email already exists!",
+        });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -73,17 +73,13 @@ const server = http.createServer(async (req, res) => {
         [username, hashedPassword, email],
       );
 
-      res.statusCode = 201;
-      return res.end(
-        JSON.stringify({
-          message: "Welcome to our cafe!",
-          user: result.rows[0],
-        }),
-      );
+      return sendJSON(res, 201, {
+        message: "Welcome to our cafe!",
+        user: result.rows[0],
+      });
     } catch (err) {
       console.error("Error during registration:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
@@ -93,49 +89,42 @@ const server = http.createServer(async (req, res) => {
       const { email, password } = body;
 
       if (!email || !password) {
-        res.statusCode = 400;
-        return res.end(
-          JSON.stringify({ error: "Write your email and login!" }),
-        );
+        return sendJSON(res, 400, { error: "Write your email and password!" });
       }
+
       const userResult = await pool.query(
         "SELECT * FROM accounts WHERE email = $1",
         [email],
       );
 
       if (userResult.rows.length === 0) {
-        res.statusCode = 400;
-        return res.end(
-          JSON.stringify({ error: "This email hasn't been registered!" }),
-        );
+        return sendJSON(res, 400, {
+          error: "This email hasn't been registered!",
+        });
       }
 
       const user = userResult.rows[0];
-
       const isPasswordValid = await bcrypt.compare(password, user.password);
+
       if (!isPasswordValid) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({ error: "Wrong password!" }));
+        return sendJSON(res, 400, { error: "Wrong password!" });
       }
 
-      res.statusCode = 200;
-      return res.end(
-        JSON.stringify({
-          message: "Succesfully logged in!",
-          user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-          },
-        }),
-      );
+      return sendJSON(res, 200, {
+        message: "Successfully logged in!",
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        },
+      });
     } catch (err) {
       console.error("Error during login:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
+
   const parts = req.url.split("/");
   const id = Number(parts[2]);
   const hasId =
@@ -148,24 +137,18 @@ const server = http.createServer(async (req, res) => {
     try {
       const body = await parse.json(req);
       const { rows } = await pool.query(
-        `UPDATE accounts
-         SET username = $1
-         WHERE id = $2
-         RETURNING id, username`,
+        `UPDATE accounts SET username = $1 WHERE id = $2 RETURNING id, username`,
         [body.username || null, id],
       );
+
       if (rows.length === 0) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "User not found" }));
+        return sendJSON(res, 404, { error: "User not found" });
       }
-      res.statusCode = 200;
-      return res.end(
-        JSON.stringify({ message: "User updated", user: rows[0] }),
-      );
+
+      return sendJSON(res, 200, { message: "User updated", user: rows[0] });
     } catch (err) {
-      console.error("Error during login:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      console.error("Error updating user:", err);
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
@@ -177,19 +160,17 @@ const server = http.createServer(async (req, res) => {
       );
 
       if (rowCount === 0) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "User not found" }));
+        return sendJSON(res, 404, { error: "User not found" });
       }
-      res.statusCode = 200;
-      return res.end(JSON.stringify({ message: "User deleted" }));
+
+      return sendJSON(res, 200, { message: "User deleted" });
     } catch (err) {
-      console.error("Error during login:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      console.error("Error deleting user:", err);
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
-  res.statusCode = 404;
-  return res.end(JSON.stringify({ error: "Server not found!" }));
+
+  return sendJSON(res, 404, { error: "Route not found!" });
 });
 
 server.listen(3000, () => {
