@@ -234,7 +234,6 @@ footer a {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.42);
 }
-
 .btn-add:active {
   transform: scale(0.98);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -506,7 +505,6 @@ footer a {
   margin-right: 25px;
   font-size: 14px;
 }
-
 .menu-tabs a.active {
   color: #ffffff;
   border-bottom: 1px solid #ffffff;
