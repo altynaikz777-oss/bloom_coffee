@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Bloom Coffee - Menu</title>
+    <title>Bloom Coffee - Admin</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -30,24 +30,48 @@
       </nav>
     </header>
 
-    <!-- Menu Header -->
+    <!-- Admin Header -->
     <div class="page-header">
-      <h1>Menu</h1>
-      <p>Roasted in small batches. Baked fresh every morning.</p>
+      <h1>Admin: Menu</h1>
+      <p>Edit or delete products. Changes are saved to the database.</p>
     </div>
 
-    <!-- Menu Filter Categories -->
-    <div class="menu-tabs" id="menuTabs">
-      <a href="#" data-category="coffee" class="active">Coffee</a>
+    <!-- Category filter -->
+    <div class="menu-tabs" id="adminTabs">
+      <a href="#" data-category="all" class="active">All</a>
+      <a href="#" data-category="coffee">Coffee</a>
       <a href="#" data-category="tea">Tea</a>
       <a href="#" data-category="pastries">Pastries</a>
     </div>
 
-    <!-- Menu Items Grid (loaded from the database by menu.js) -->
+    <!-- Products (rendered by admin.js) -->
     <section class="cards-section" style="padding-top: 0">
-      <p id="menuMessage" style="min-height: 20px"></p>
-      <div class="grid" id="menuGrid"></div>
+      <p id="adminMessage" class="admin-message"></p>
+      <div class="grid" id="productGrid"></div>
     </section>
+
+    <!-- Edit modal -->
+    <div class="modal-overlay" id="editModal">
+      <div class="modal-box">
+        <button class="modal-close" id="editClose" aria-label="Close">&times;</button>
+        <form class="modal-form" id="editForm">
+          <label for="editName">Name</label>
+          <input type="text" id="editName" required />
+
+          <label for="editPrice">Price</label>
+          <input type="number" id="editPrice" step="0.01" min="0" required />
+
+          <label for="editDescription">Description</label>
+          <input type="text" id="editDescription" />
+
+          <label for="editImage">Image (path or URL)</label>
+          <input type="text" id="editImage" />
+
+          <button type="submit" class="btn-add" id="editSave">Save changes</button>
+          <p class="modal-message" id="editMessage"></p>
+        </form>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -70,7 +94,6 @@
         <a href="cart.html">Cart</a>
       </div>
     </footer>
-    <script src="script.js"></script>
-    <script src="menu.js"></script>
+    <script src="admin.js"></script>
   </body>
 </html>

@@ -46,41 +46,25 @@ body {
 .modal-close:hover {
   color: #241510;
 }
-<<<<<<< Updated upstream
-.btnLogIn{
-=======
 .btnLogIn {
->>>>>>> Stashed changes
   background-color: #241918;
   color: #b8a795;
   border: 2px solid #241918;
   padding: 10px;
   border-radius: 10px;
 }
-<<<<<<< Updated upstream
-.btnLogIn:hover{
-  color: #3b2b27;
-  background-color: transparent;
-}
-.btnRegister{
-=======
 .btnLogIn:hover {
   color: #3b2b27;
   background-color: transparent;
 }
 .btnRegister {
->>>>>>> Stashed changes
   background-color: #241918;
   color: #b8a795;
   border: 2px solid #241918;
   padding: 10px;
   border-radius: 10px;
 }
-<<<<<<< Updated upstream
-.btnRegister:hover{
-=======
 .btnRegister:hover {
->>>>>>> Stashed changes
   color: #3b2b27;
   background-color: transparent;
 }
@@ -109,10 +93,6 @@ body {
 
 .tab-btn:hover {
   color: #241510;
-<<<<<<< Updated upstream
-  
-=======
->>>>>>> Stashed changes
 }
 
 .modal-form {
@@ -121,10 +101,6 @@ body {
   gap: 0.9rem;
 }
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 .modal-form label {
   font-size: 0.85rem;
   color: #4a3c33;
@@ -151,12 +127,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-<<<<<<< Updated upstream
   padding: 20px 70px;
-=======
-  padding: 20px 30px;
-  height: 80px;
->>>>>>> Stashed changes
   background-color: #2b1f1d;
   position: sticky;
   top: 0;
@@ -182,10 +153,6 @@ nav a:hover {
   color: #ffffff;
 }
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 footer {
   display: flex;
   justify-content: space-between;
@@ -212,10 +179,6 @@ footer a {
   display: block;
 }
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 .hero {
   position: relative;
   height: 88vh;
@@ -276,12 +239,7 @@ footer a {
 }
 .hero-content {
   position: relative;
-<<<<<<< Updated upstream
   top: -120px;
-=======
-  left: 200px;
-  top: -210px;
->>>>>>> Stashed changes
   max-width: 500px;
   color: #ffffff;
 }
@@ -751,282 +709,218 @@ footer a {
   text-decoration: none;
   font-size: 14px;
 }
-
-/* Admin Sign In */
-.admin-page {
-  --admin-bg: #2b1f1d;
-  --admin-paper: #d8c3b0;
-  --admin-ink: #2b1f1d;
-  --admin-muted: #75655b;
-  --admin-line: #aa9380;
-  min-height: 100vh;
-  background: var(--admin-bg);
+* {
+  box-sizing: border-box;
 }
 
-.admin-topbar {
-  height: 70px;
+body.admin-page {
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px;
+  background: #f7f3ed;
+  color: #332720;
+  font-family: Arial, sans-serif;
+}
+
+.admin-header {
+  width: min(100%, 1100px);
+  min-height: 120px;
+  margin: 0 auto 34px;
+  padding: 28px 6%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 max(24px, calc((100% - 1100px) / 2));
-  border-bottom: 1px solid #493832;
+  gap: 20px;
+  border-radius: 0 0 18px 18px;
+  background: #2c1d1b;
+  color: #fffefa;
+  box-shadow: 0 10px 30px rgb(55 36 25 / 7%);
 }
 
-.admin-brand,
-.admin-home-link {
-  color: #f3ece4;
-  text-decoration: none;
+.admin-title {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
 }
 
-.admin-brand {
-  font-size: 20px;
+.admin-subtitle {
+  margin: 0;
+  color: #d4c4b8;
+  font-size: 0.95rem;
 }
 
-.admin-home-link {
-  color: #cbbba8;
-  font-size: 13px;
-}
-
-.admin-home-link:hover {
-  color: #ffffff;
-}
-
-.admin-layout {
-  min-height: calc(100vh - 70px);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(400px, 0.82fr);
-}
-
-.admin-intro {
-  min-height: 560px;
-  display: flex;
-  align-items: flex-end;
-  padding: clamp(32px, 7vw, 92px);
-  background:
-    linear-gradient(90deg, rgba(43, 31, 29, 0.83), rgba(43, 31, 29, 0.3)),
-    url("./images/hero.jpg") center / cover no-repeat;
-}
-
-.admin-intro-content {
-  max-width: 440px;
-  margin-bottom: 150px;
-}
-
-.admin-eyebrow {
-  margin-bottom: 18px;
-  color: #e1cdb5;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.admin-intro-title {
-  color: #f3ece4;
-  font-size: clamp(36px, 4vw, 54px);
-  line-height: 1.08;
-}
-
-.admin-intro-rule {
-  display: block;
-  width: 42px;
-  height: 1px;
-  margin: 26px 0 18px;
-  background: #d8c3b0;
-}
-
-.admin-intro-note {
-  max-width: 300px;
-  color: #e5d3bf;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.admin-form-panel {
-  min-height: 560px;
-  flex-direction: column;
-  justify-content: center;
-  padding: clamp(32px, 6vw, 76px);
-  background: var(--admin-paper);
-  color: var(--admin-ink);
-<<<<<<< Updated upstream
-  
-
-
-=======
->>>>>>> Stashed changes
-}
-
-.admin-form-panel > div {
-  width: min(100%, 380px);
+.admin-main {
+  width: min(100%, 1100px);
   margin: 0 auto;
 }
 
-.admin-eyebrow-dark {
-  margin-bottom: 12px;
-<<<<<<< Updated upstream
-  color: #3e342d;
-=======
-  color: #44362f;
->>>>>>> Stashed changes
+.admin-section {
+  margin-bottom: 38px;
 }
 
-.admin-form-panel h1 {
-  margin: 0 0 10px;
-  font-size: 42px;
-  font-weight: 400;
+.section-title {
+  margin: 0 0 16px;
+  font-family: Georgia, serif;
+  font-size: 1.35rem;
 }
 
-.admin-form-description {
-  margin-bottom: 32px;
-  color: #57483f;
-  font-size: 15px;
-  line-height: 1.55;
-}
-
-.admin-form-description strong {
-  overflow-wrap: anywhere;
-}
-
-.admin-field {
-  margin-bottom: 20px;
-}
-
-.admin-field label {
-  display: block;
-  margin-bottom: 8px;
-  color: #44362f;
-  font-size: 13px;
-}
-
-.admin-field input {
-  width: 100%;
-  min-height: 48px;
-  padding: 11px 12px;
-  border: 1px solid var(--admin-line);
-  border-radius: 0;
-  background: rgba(255, 255, 255, 0.24);
-  border: 2px solid rgba(20, 16, 14, 0.2);
-  border-radius: 10px;
-<<<<<<< Updated upstream
-  color: var(--admin-ink);
-  font: inherit;
-=======
->>>>>>> Stashed changes
-}
-
-.admin-field input:focus-visible {
-  outline: 2px solid #58443a;
-  outline-offset: 2px;
-}
-
-.admin-message {
-  min-height: 24px;
-  margin: 2px 0 12px;
-  color: #7d3328;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.admin-submit {
-  width: 100%;
-  min-height: 48px;
+.section-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
-  border: 1px solid var(--admin-ink);
-  background: var(--admin-ink);
-<<<<<<< Updated upstream
-  color: #2f261c;
-  font: inherit;
-  cursor: pointer;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-heading .section-title {
+  margin: 0;
+}
+
+.category-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-button,
+.button {
+  min-height: 42px;
+  padding: 10px 17px;
+  border: 1px solid #e8ded3;
   border-radius: 10px;
-  border: 2px solid  rgba(20, 16, 14, 0.2);
-=======
->>>>>>> Stashed changes
+  background: #fffefa;
+  color: #332720;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease,
+    border-color 160ms ease, box-shadow 160ms ease;
 }
 
-.admin-submit:hover:not(:disabled) {
-  background: #49352e;
-<<<<<<< Updated upstream
-  color: #cbbba8;
-=======
->>>>>>> Stashed changes
+.category-button {
+  border-radius: 999px;
+  color: #68452f;
 }
 
-.admin-submit:focus-visible {
-  outline: 2px solid var(--admin-ink);
+.category-button:hover,
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgb(55 36 25 / 10%);
+}
+
+.category-button--active,
+.category-button--active:hover {
+  border-color: #68452f;
+  background: #68452f;
+  color: #fff;
+}
+
+.button--primary {
+  border-color: #68452f;
+  background: #68452f;
+  color: #fff;
+}
+
+.button--primary:hover {
+  border-color: #513522;
+  background: #513522;
+}
+
+.button--secondary {
+  border-color: #cdb9a8;
+  background: transparent;
+  color: #68452f;
+}
+
+.button--secondary:hover {
+  background: #f5eee7;
+}
+
+.button--danger {
+  border-color: #e7b7b0;
+  background: transparent;
+  color: #bd5548;
+}
+
+.button--danger:hover {
+  border-color: #bd5548;
+  background: #bd5548;
+  color: #fff;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  min-height: 180px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+  border: 1px solid #e8ded3;
+  border-radius: 16px;
+  background: #fffefa;
+  box-shadow: 0 10px 30px rgb(55 36 25 / 7%);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgb(55 36 25 / 11%);
+}
+
+.product-card__name {
+  margin: 0 0 7px;
+  font-family: Georgia, serif;
+  font-size: 1.2rem;
+}
+
+.product-card__category {
+  margin: 0 0 10px;
+  color: #89796e;
+  font-size: 0.95rem;
+}
+
+.product-card__price {
+  margin: 0;
+  color: #68452f;
+  font-weight: 700;
+}
+
+.product-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button:focus-visible {
+  outline: 3px solid #c98e5e;
   outline-offset: 3px;
 }
 
-.admin-submit:disabled {
-  cursor: wait;
-  opacity: 0.7;
-}
+@media (max-width: 600px) {
+  body.admin-page {
+    padding: 16px;
+  }
 
-.admin-panel-footer {
-  width: min(100%, 380px);
-  margin: 42px auto 0;
-  color: #786455;
-  font-size: 12px;
-}
+  .admin-header {
+    min-height: auto;
+    margin-bottom: 28px;
+    padding: 26px 22px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-.admin-panel-footer span {
-  padding: 0 6px;
-}
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-@media (max-width: 760px) {
-  .admin-layout {
+  .product-grid {
     grid-template-columns: 1fr;
-  }
-
-  .admin-intro {
-    min-height: 260px;
-    padding: 36px 24px;
-    background-position: center 60%;
-  }
-
-  .admin-intro-title {
-    font-size: 36px;
-  }
-
-  .admin-intro-rule {
-    margin: 16px 0 12px;
-  }
-
-  .admin-intro-note {
-    font-size: 13px;
-  }
-
-  .admin-form-panel {
-    min-height: 460px;
-    padding: 40px 24px;
-  }
-}
-
-@media (max-width: 420px) {
-  .admin-topbar {
-    height: 60px;
-    padding: 0 18px;
-  }
-
-  .admin-brand {
-    font-size: 18px;
-  }
-
-  .admin-home-link {
-    font-size: 12px;
-  }
-
-  .admin-intro {
-    min-height: 220px;
-  }
-
-  .admin-intro-title {
-    font-size: 32px;
-  }
-
-  .admin-form-panel h1 {
-    font-size: 36px;
   }
 }

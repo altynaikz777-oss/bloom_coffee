@@ -7,11 +7,11 @@ import bcrypt from "bcrypt";
 const { Pool } = pg;
 
 const pool = new Pool({
-  user: process.env.USER,
+  user: process.env.DB_USER,
   host: process.env.HOST,
   database: process.env.DATABASE,
   port: process.env.PORT,
-  password: String(process.env.PASSWORD || ""),
+  password: String(process.env.DB_PASSWORD || ""),
 });
 
 function sendJSON(res, statusCode, data) {
