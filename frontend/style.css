@@ -129,7 +129,6 @@ header {
   align-items: center;
   padding: 20px 30px;
   height: 80px;
-  padding: 20px 70px;
   background-color: #2b1f1d;
   position: sticky;
   top: 0;
@@ -242,7 +241,7 @@ footer a {
 .hero-content {
   position: relative;
   left: 200px;
-  top: -190px;
+  top: -210px;
   max-width: 500px;
   color: #ffffff;
 }
