@@ -11,7 +11,7 @@ const pool = new Pool({
   host: process.env.HOST,
   database: process.env.DATABASE,
   port: process.env.PORT,
-  password: String(process.env.PASSWORD || ""),
+  password: String(process.env.DB_PASSWORD || ""),
 });
 
 function sendJSON(res, statusCode, data) {
