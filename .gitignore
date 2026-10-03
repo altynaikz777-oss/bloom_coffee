@@ -2,6 +2,13 @@ node_modules/
 **/node_modules/
 .env
 **/.env
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 
+>>>>>>> 3c3aba55b4f1da44715d06c6438e634267d6f3da
+=======
+
+>>>>>>> origin/main
 backend/data/
 backend/*.tmp
