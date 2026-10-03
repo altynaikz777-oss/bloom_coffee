@@ -1,29 +1,3 @@
-// let grid = document.querySelector(".grid");
-// document.addEventListener("DOMContentLoaded", function () {
-//   async function add() {
-//     let url = "./data.json";
-//     let promise = await fetch(url);
-//     let data = await promise.json();
-//     console.log(data);
-//     for (let i = 0; i < data.lenght; i++) {
-//       grid.innerHTML += `
-//   <div class="card">
-//           <img src="${data[i].image}" />
-//           <div class="card-content">
-//             <h3 class="card-title">${data[i].name}</h3>
-//             <p class="card-desc">
-//              ${data[i].description}
-//             </p>
-//             <div class="card-footer">
-//               <span class="price">$${data[i].price}</span>
-//               <a href="cart.html" class="btn-add">Add to cart</a>
-//             </div>
-//           </div>
-//         </div>`;
-//     }
-//   }
-//   add();
-// });
 function openModal() {
   document.getElementById("accountModal").classList.add("open");
 }
@@ -51,8 +25,8 @@ function switchTab(tab) {
   }
 }
 
-async function handleRegister(event) {
-  event.preventDefault();
+async function handleRegister(e) {
+  e.preventDefault();
 
   const person = {
     username: document.getElementById("regUsername").value,
@@ -60,46 +34,62 @@ async function handleRegister(event) {
     password: document.getElementById("regPassword").value,
   };
 
-  const response = await fetch("http://localhost:3000/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(person),
-  });
+  const message = document.getElementById("registerMessage");
 
-  const data = await response.json();
+  try {
+    const response = await fetch('http://localhost:3000/register', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(person),
+    });
 
-  if (!response.ok) {
-    document.getElementById("registerMessage").textContent =
-      data.error || "Something went wrong";
-    return;
+    const data = await response.json();
+
+    if (!response.ok) {
+      message.textContent = data.error || "Something went wrong";
+      return;
+    }
+
+    localStorage.setItem("bloomUser", JSON.stringify(data.user));
+    window.location.href = data.user.role === "admin" ? "admin.html" : "menu.html";
+  } catch (err) {
+    console.error(err);
+    message.textContent = "Cannot reach the server. Is it running?";
   }
-  console.log(data);
-  document.getElementById("registerMessage").textContent = "Account created!";
 }
+
 async function handleLogin(event) {
   event.preventDefault();
+  const message = document.getElementById("loginMessage");
+  message.textContent = "";
 
   const person = {
-    email: document.getElementById("loginEmail").value,
+    email: document.getElementById("loginEmail").value.trim(),
     password: document.getElementById("loginPassword").value,
   };
 
-  const response = await fetch("http://localhost:3000/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(person),
-  });
+  try {
+    const response = await fetch('http://localhost:3000/login', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(person),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (!response.ok) {
-    document.getElementById("loginMessage").textContent =
-      data.error || "Something went wrong";
-    return;
+    if (!response.ok) {
+      message.textContent = data.error || "Something went wrong";
+      return;
+    }
+
+    const user = data.user;
+    localStorage.setItem("bloomUser", JSON.stringify(user));
+
+    window.location.href = user.role === "admin" ? "admin.html" : "menu.html";
+  } catch (err) {
+    console.error(err);
+    message.textContent = "Cannot reach the server. Is it running?";
   }
-
-  console.log(data);
-  document.getElementById("loginMessage").textContent = "Logged in!";
 }
 
 let addbtns = document.querySelectorAll(".btn-add");
@@ -109,3 +99,4 @@ addbtns.forEach((element) => {
       element.textContent === "Added" ? "Add to cart" : "Added";
   });
 });
+ 
