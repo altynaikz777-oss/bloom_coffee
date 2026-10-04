@@ -194,28 +194,28 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  if (req.url === "/products" && req.method === "POST") {
-    if (!checkAdmin(req)) {
-      return sendJSON(res, 403, { error: "Admin access required" });
-    }
-    try {
-      const body = await parse.json(req);
-      const { name, category, price, description, image } = body;
+  // if (req.url === "/products" && req.method === "POST") {
+  //   if (!checkAdmin(req)) {
+  //     return sendJSON(res, 403, { error: "Admin access required" });
+  //   }
+  //   try {
+  //     const body = await parse.json(req);
+  //     const { name, category, price, description, image } = body;
 
-      const result = await pool.query(
-        "INSERT INTO products (name, category, price, description, image) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [name, category, price, description, image],
-      );
+  //     const result = await pool.query(
+  //       "INSERT INTO products (name, category, price, description, image) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+  //       [name, category, price, description, image],
+  //     );
 
-      return sendJSON(res, 201, {
-        message: "Product added",
-        product: result.rows[0],
-      });
-    } catch (err) {
-      console.error("Error adding product:", err);
-      return sendJSON(res, 500, { error: "Server error" });
-    }
-  }
+  //     return sendJSON(res, 201, {
+  //       message: "Product added",
+  //       product: result.rows[0],
+  //     });
+  //   } catch (err) {
+  //     console.error("Error adding product:", err);
+  //     return sendJSON(res, 500, { error: "Server error" });
+  //   }
+  // }
 
   const productParts = req.url.split("/");
   const productId = Number(productParts[2]);
@@ -224,33 +224,6 @@ const server = http.createServer(async (req, res) => {
     productParts.length === 3 &&
     Number.isInteger(productId) &&
     productId > 0;
-
-  if (hasProductId && req.method === "PUT") {
-    try {
-      const body = await parse.json(req);
-      const { name, price, description, image } = body;
-
-      const result = await pool.query(
-        "UPDATE products SET name = $1, price = $2, description = $3, image = $4 WHERE id = $5 RETURNING *",
-        [name, price, description, image, productId],
-      );
-
-      if (result.rows.length === 0) {
-        return sendJSON(res, 404, { error: "Product not found" });
-      }
-
-      return sendJSON(res, 200, {
-        message: "Product updated",
-        product: result.rows[0],
-      });
-    } catch (err) {
-      console.error("Error updating product:", err);
-      return sendJSON(res, 500, { error: "Server error" });
-    }
-  }
-
-  if (hasProductId && req.method === "DELETE") {
-  }
 
   if (hasProductId && req.method === "PUT") {
     const admin = checkAdmin(req);
