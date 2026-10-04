@@ -139,6 +139,25 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  if (req.url === "/coffee-of-the-day" && req.method === "GET") {
+  try {
+    const result = await pool.query("SELECT * FROM products ORDER BY id");
+    const products = result.rows;
+
+    if (products.length === 0) {
+      return sendJSON(res, 404, { error: "No products yet" });
+    }
+
+    const today = new Date().getDate();
+    const index = today % products.length;
+
+    return sendJSON(res, 200, products[index]);
+  } catch (err) {
+    console.error("Error:", err);
+    return sendJSON(res, 500, { error: "Server error" });
+  }
+}
+
   const accountParts = req.url.split("/");
   const accountId = Number(accountParts[2]);
   const hasAccountId =
