@@ -1,5 +1,21 @@
 function openModal() {
+  // if the user is already logged in, the icon works as "log out"
+  const savedUser = localStorage.getItem("bloomUser");
+  if (savedUser !== null) {
+    const user = JSON.parse(savedUser);
+    if (confirm("You are logged in as " + user.username + ". Log out?")) {
+      logout();
+    }
+    return;
+  }
+
   document.getElementById("accountModal").classList.add("open");
+}
+
+function logout() {
+  localStorage.removeItem("bloomUser");
+  localStorage.removeItem("bloomCart"); // the cart belongs to this user, so clear it
+  window.location.href = "home.html";
 }
 
 function closeModal() {
@@ -37,7 +53,7 @@ async function handleRegister(e) {
   const message = document.getElementById("registerMessage");
 
   try {
-    const response = await fetch('http://localhost:3000/register', {
+    const response = await fetch("http://localhost:3000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(person),
@@ -51,7 +67,8 @@ async function handleRegister(e) {
     }
 
     localStorage.setItem("bloomUser", JSON.stringify(data.user));
-    window.location.href = data.user.role === "admin" ? "admin.html" : "menu.html";
+    window.location.href =
+      data.user.role === "admin" ? "admin.html" : "menu.html";
   } catch (err) {
     console.error(err);
     message.textContent = "Cannot reach the server. Is it running?";
@@ -69,7 +86,7 @@ async function handleLogin(event) {
   };
 
   try {
-    const response = await fetch('http://localhost:3000/login', {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(person),
@@ -95,8 +112,21 @@ async function handleLogin(event) {
 let addbtns = document.querySelectorAll(".btn-add");
 addbtns.forEach((element) => {
   element.addEventListener("click", function () {
+    // only logged-in users can press "Add to cart"
+    if (localStorage.getItem("bloomUser") === null) {
+      alert("Please log in first!");
+      openModal();
+      switchTab("login");
+      return;
+    }
+
     element.textContent =
       element.textContent === "Added" ? "Add to cart" : "Added";
   });
 });
- 
+
+// ?login=1 in the address -> open the login window right away
+if (new URLSearchParams(window.location.search).get("login")) {
+  openModal();
+  switchTab("login");
+}
