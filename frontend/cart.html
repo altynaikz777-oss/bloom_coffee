@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    
+    <!-- Header / Navigation -->
     <header>
       <a href="home.html" class="logo">Bloom Coffee</a>
       <nav
@@ -20,118 +20,57 @@
         <a href="home.html">Home</a>
         <a href="menu.html">Menu</a>
         <a href="contact.html">Contact</a>
-        <button
-          id="btnSignIn"
-          onclick="openModal()"
-          style="background-color: transparent; border: 0; padding: 20px">
+        <a>
           <img
             style="width: 28px; opacity: 0.9; padding-top: 4px"
             src="./images/1000_F_433520193_85OMr4384m2WI8I0vxvge9dcvlm2xqqv.png"
-            alt=""/>
-          </button>
-        <a href="cart.html" class="active">Cart (1)</a>
+            alt=""
+        /></a>
+        <a href="cart.html" class="active">Cart</a>
       </nav>
     </header>
 
-    
+    <!-- Cart Content -->
     <div style="margin-left: 250px" class="cart-container">
-      <h1>Your cart</h1>
+      <h1 id="cartTitle">Your cart</h1>
 
-      <div class="cart-item">
-        <img
-          src="https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=600&q=80"
-          alt="Oat Milk Latte"
-        />
+      <!-- shown by cart.js when the cart is empty -->
+      <p id="cartEmpty" style="display: none">Your cart is empty.</p>
+      <!-- cart.js puts the products here -->
+      <div id="cartItems"></div>
 
-        <div class="cart-item-details">
-          <div class="cart-item-title">Oat Milk Latte</div>
-          <div class="cart-item-price">$5.25 each</div>
-        </div>
-
-        <div class="quantity-control">
-          <button>-</button>
-          <span>1</span>
-          <button>+</button>
-        </div>
-
-        <div class="cart-item-total">$5.25</div>
-
-        <a href="#" class="remove-link">Remove</a>
-      </div>
-
-      <div class="cart-summary">
+      <!-- Summary Box -->
+      <div class="cart-summary" id="cartSummary">
         <div class="summary-row">
           <span>Subtotal</span>
-          <span>$5.25</span>
+          <span id="subtotal">$0.00</span>
         </div>
         <div class="summary-row total">
           <span>Total</span>
-          <span>$5.25</span>
+          <span id="total">$0.00</span>
         </div>
 
         <div class="cart-actions">
           <a href="menu.html" class="btn-secondary">Continue shopping</a>
-          <a href="#" class="btn-primary">Proceed to checkout</a>
+          <a href="#" class="btn-primary" id="checkoutBtn">Proceed to checkout</a>
         </div>
       </div>
     </div>
-    <div class="modal-overlay" id="accountModal">
-      <div class="modal-box">
-        <button class="modal-close" onclick="closeModal()" aria-label="Close">
-          &times;
-        </button>
 
-        <div class="modal-tabs">
-          <button
-            class="tab-btn active"
-            id="tabRegisterBtn"
-            onclick="switchTab('register')"
-          >
-            Register
-          </button>
-          <button class="tab-btn" id="tabLoginBtn" onclick="switchTab('login')">
-            Log in
-          </button>
-        </div>
-
-        <form
-          id="registerForm"
-          class="modal-form"
-          onsubmit="handleRegister(event)"
-        >
-          <label for="regUsername">Username</label>
-          <input type="text" id="regUsername" required />
-
-          <label for="regEmail">Email</label>
-          <input type="email" id="regEmail" required />
-
-          <label for="regPassword">Password</label>
-          <input type="password" id="regPassword" required />
-
-          <button type="submit" class="btnRegister btn-solid">Create account</button>
-
-          
-          <p class="modal-message" id="registerMessage"></p>
-        </form>
-
-        <form
-          id="loginForm"
-          class="modal-form"
-          onsubmit="handleLogin(event)"
-          hidden
-        >
-          <label for="loginEmail">Email</label>
-          <input type="text" id="loginEmail" required />
-
-          <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" required />
-
-          <button type="submit" class="btnLogIn btn-solid">Log in</button>
-          <p class="modal-message" id="loginMessage"></p>
-        </form>
+    <!-- Hidden until the user presses "Proceed to checkout" -->
+    <div
+      id="orderSuccess"
+      class="cart-container"
+      style="display: none; margin-left: 250px"
+    >
+      <h1>Your order has been placed successfully!</h1>
+      <p>Thank you for choosing Bloom Coffee.</p>
+      <div class="cart-actions" style="margin-top: 24px">
+        <a href="home.html" class="btn-primary">Go back to home</a>
       </div>
     </div>
 
+    <!-- Footer -->
     <footer>
       <div>
         <h3>Bloom Coffee</h3>
@@ -152,6 +91,6 @@
         <a href="cart.html">Cart</a>
       </div>
     </footer>
+    <script src="cart.js"></script>
   </body>
-  <script src="script.js"></script>
 </html>
