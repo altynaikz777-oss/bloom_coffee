@@ -1,5 +1,4 @@
 function openModal() {
-  // if the user is already logged in, the icon works as "log out"
   const savedUser = localStorage.getItem("bloomUser");
   if (savedUser !== null) {
     const user = JSON.parse(savedUser);
@@ -14,7 +13,7 @@ function openModal() {
 
 function logout() {
   localStorage.removeItem("bloomUser");
-  localStorage.removeItem("bloomCart"); // the cart belongs to this user, so clear it
+  localStorage.removeItem("bloomCart");
   window.location.href = "home.html";
 }
 
@@ -112,7 +111,6 @@ async function handleLogin(event) {
 let addbtns = document.querySelectorAll(".btn-add");
 addbtns.forEach((element) => {
   element.addEventListener("click", function () {
-    // only logged-in users can press "Add to cart"
     if (localStorage.getItem("bloomUser") === null) {
       alert("Please log in first!");
       openModal();
@@ -120,13 +118,6 @@ addbtns.forEach((element) => {
       return;
     }
 
-    element.textContent =
-      element.textContent === "Added" ? "Add to cart" : "Added";
+    window.location.href = "menu.html";
   });
 });
-
-// ?login=1 in the address -> open the login window right away
-if (new URLSearchParams(window.location.search).get("login")) {
-  openModal();
-  switchTab("login");
-}

@@ -1,30 +1,19 @@
-// ==========================================================
-// CART
-// The cart is an array saved in localStorage under the name "bloomCart".
-// One item looks like this:
-//   { id: 3, name: "Latte", price: 4.5, image: "latte.jpg", qty: 2 }
-// ==========================================================
-
-// Get the cart from localStorage
 function getCart() {
   const saved = localStorage.getItem("bloomCart");
   if (saved === null) {
-    return []; // nothing saved yet, so the cart is empty
+    return [];
   }
-  return JSON.parse(saved); // text -> array
+  return JSON.parse(saved);
 }
 
-// Save the cart to localStorage
 function saveCart(cart) {
-  localStorage.setItem("bloomCart", JSON.stringify(cart)); // array -> text
+  localStorage.setItem("bloomCart", JSON.stringify(cart));
   showCartCount();
 }
 
-// Add one product to the cart (used by menu.js)
 function addToCart(product) {
   const cart = getCart();
 
-  // 1. if the product is already in the cart, make qty bigger by 1
   for (let i = 0; i < cart.length; i++) {
     if (cart[i].id === product.id) {
       cart[i].qty = cart[i].qty + 1;
@@ -33,7 +22,6 @@ function addToCart(product) {
     }
   }
 
-  // 2. if it is not in the cart yet, add it as a new item
   cart.push({
     id: product.id,
     name: product.name,
@@ -44,7 +32,6 @@ function addToCart(product) {
   saveCart(cart);
 }
 
-// Show the number of items in the header: Cart (3)
 function showCartCount() {
   const link = document.querySelector('header nav a[href="cart.html"]');
   if (link === null) {
@@ -64,16 +51,10 @@ function showCartCount() {
   }
 }
 
-// ==========================================================
-// CART PAGE (this part only does something on cart.html)
-// ==========================================================
-
-// 4.5 -> "$4.50"
 function money(number) {
   return "$" + number.toFixed(2);
 }
 
-// Make one row of the cart (one product)
 function makeCartRow(item) {
   const row = document.createElement("div");
   row.className = "cart-item";
@@ -95,7 +76,6 @@ function makeCartRow(item) {
 
   details.append(title, price);
 
-  // the  -  1  +  buttons
   const control = document.createElement("div");
   control.className = "quantity-control";
 
@@ -116,7 +96,6 @@ function makeCartRow(item) {
 
   control.append(minus, qty, plus);
 
-  // price x quantity
   const total = document.createElement("div");
   total.className = "cart-item-total";
   total.textContent = money(item.price * item.qty);
@@ -134,7 +113,6 @@ function makeCartRow(item) {
   return row;
 }
 
-// Change the quantity: change is +1 or -1
 function changeQty(id, change) {
   const cart = getCart();
 
@@ -143,9 +121,9 @@ function changeQty(id, change) {
       cart[i].qty = cart[i].qty + change;
 
       if (cart[i].qty <= 0) {
-        cart.splice(i, 1); // remove this item from the array
+        cart.splice(i, 1);
       }
-      break; // we found it, stop the loop
+      break;
     }
   }
 
@@ -153,7 +131,6 @@ function changeQty(id, change) {
   showCart();
 }
 
-// Remove a product from the cart completely
 function removeItem(id) {
   const cart = getCart();
 
@@ -168,15 +145,14 @@ function removeItem(id) {
   showCart();
 }
 
-// Draw the whole cart on the page
 function showCart() {
   const list = document.getElementById("cartItems");
   if (list === null) {
-    return; // we are not on cart.html, so do nothing
+    return;
   }
 
   const cart = getCart();
-  list.innerHTML = ""; // clear old rows
+  list.innerHTML = "";
   let sum = 0;
 
   for (let i = 0; i < cart.length; i++) {
@@ -187,7 +163,6 @@ function showCart() {
   document.getElementById("subtotal").textContent = money(sum);
   document.getElementById("total").textContent = money(sum);
 
-  // empty cart -> show the message, hide the totals
   if (cart.length === 0) {
     document.getElementById("cartEmpty").style.display = "block";
     document.getElementById("cartSummary").style.display = "none";
@@ -197,18 +172,14 @@ function showCart() {
   }
 }
 
-// ==========================================================
-// CHECKOUT
-// ==========================================================
 const checkoutBtn = document.getElementById("checkoutBtn");
 
 if (checkoutBtn !== null) {
   checkoutBtn.addEventListener("click", function (e) {
     e.preventDefault();
 
-    saveCart([]); // empty the cart
+    saveCart([]);
 
-    // hide the cart, show the "order placed" message
     document.getElementById("cartTitle").style.display = "none";
     document.getElementById("cartItems").style.display = "none";
     document.getElementById("cartSummary").style.display = "none";
@@ -216,6 +187,5 @@ if (checkoutBtn !== null) {
   });
 }
 
-// Run when the page loads
 showCartCount();
 showCart();
