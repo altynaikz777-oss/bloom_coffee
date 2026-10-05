@@ -1,3 +1,46 @@
+async function products() {
+  const grid = document.querySelector(".grid");
+  if (!grid) return;
+
+  const response = await fetch("http://localhost:3000/products");
+  const productList = await response.json();
+
+  productList.forEach((product) => {
+    grid.innerHTML += `
+      <div class="card">
+        <img src="${product.image}" alt="${product.name}">
+        <div class="card-content">
+          <h3 class="card-title">${product.name}</h3>
+          <p class="card-desc">${product.description || ""}</p>
+          <div class="card-footer">
+            <span class="price">$${Number(product.price).toFixed(2)}</span>
+            <button class="btn-add">Add to cart</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  const addButtons = grid.querySelectorAll(".btn-add");
+
+  addButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      if (localStorage.getItem("bloomUser") === null) {
+        alert("Please log in first!");
+        openModal();
+        switchTab("login");
+        return;
+      }
+
+      addToCart(productList[index]);
+      button.textContent = "Added";
+    });
+  });
+}
+
+products();
+///////
+
 function openModal() {
   // if the user is already logged in, the icon works as "log out"
   const savedUser = localStorage.getItem("bloomUser");
@@ -108,22 +151,6 @@ async function handleLogin(event) {
     message.textContent = "Cannot reach the server. Is it running?";
   }
 }
-
-let addbtns = document.querySelectorAll(".btn-add");
-addbtns.forEach((element) => {
-  element.addEventListener("click", function () {
-    // only logged-in users can press "Add to cart"
-    if (localStorage.getItem("bloomUser") === null) {
-      alert("Please log in first!");
-      openModal();
-      switchTab("login");
-      return;
-    }
-
-    element.textContent =
-      element.textContent === "Added" ? "Add to cart" : "Added";
-  });
-});
 
 // ?login=1 in the address -> open the login window right away
 if (new URLSearchParams(window.location.search).get("login")) {
