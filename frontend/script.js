@@ -31,7 +31,6 @@ async function loadHomeProducts() {
         switchTab("login");
         return;
       }
-
       addToCart(productList[index]);
       button.textContent = "Added";
     });
