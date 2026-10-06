@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-
     <header>
       <a href="home.html" class="logo">Bloom Coffee</a>
       <nav
@@ -29,13 +28,15 @@
         /></a>
       </nav>
     </header>
-
-
-    <div class="page-header">
-      <h1>Admin: Menu</h1>
-      <p>Edit or delete products. Changes are saved to the database.</p>
+    <div class="row">
+      <div class="page-header">
+        <h1>Admin: Menu</h1>
+        <p>Edit or delete products. Changes are saved to the database.</p>
+      </div>
+      <button type="button" class="newpro" id="newProductToggle">
+        Add new product
+      </button>
     </div>
-
 
     <div class="menu-tabs" id="adminTabs">
       <a href="#" data-category="all" class="active">All</a>
@@ -43,17 +44,29 @@
       <a href="#" data-category="tea">Tea</a>
       <a href="#" data-category="pastries">Pastries</a>
     </div>
+    <div class="newproductdiv" id="newProductForm">
+      <input type="text" placeholder="name" />
+      <input type="text" placeholder="description" />
+      <input type="number" placeholder="price" />
 
+      <label class="product-file" for="newProductImage">
+        <span class="product-file-icon" aria-hidden="true">↑</span>
+        <span class="product-file-text">Choose product photo</span>
+        <input id="newProductImage" type="file" accept="image/*" />
+      </label>
 
+      <button type="button" class="add-product-btn">Add product</button>
+    </div>
     <section class="cards-section" style="padding-top: 0">
       <p id="adminMessage" class="admin-message"></p>
       <div class="grid" id="productGrid"></div>
     </section>
 
-
     <div class="modal-overlay" id="editModal">
       <div class="modal-box">
-        <button class="modal-close" id="editClose" aria-label="Close">&times;</button>
+        <button class="modal-close" id="editClose" aria-label="Close">
+          &times;
+        </button>
         <form class="modal-form" id="editForm">
           <label for="editName">Name</label>
           <input type="text" id="editName" required />
@@ -67,12 +80,13 @@
           <label for="editImage">Image (path or URL)</label>
           <input type="text" id="editImage" />
 
-          <button type="submit" class="btn-add" id="editSave">Save changes</button>
+          <button type="submit" class="btn-add" id="editSave">
+            Save changes
+          </button>
           <p class="modal-message" id="editMessage"></p>
         </form>
       </div>
     </div>
-
 
     <footer>
       <div>
