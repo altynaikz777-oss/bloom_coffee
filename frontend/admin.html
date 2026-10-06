@@ -44,19 +44,32 @@
       <a href="#" data-category="tea">Tea</a>
       <a href="#" data-category="pastries">Pastries</a>
     </div>
-    <div class="newproductdiv" id="newProductForm">
-      <input type="text" placeholder="name" />
-      <input type="text" placeholder="description" />
-      <input type="number" placeholder="price" />
+    <form class="newproductdiv" id="newProductForm">
+      <input id="newProductName" type="text" placeholder="Name" required />
+      <input id="newProductDescription" type="text" placeholder="Description" />
+      <input
+        id="newProductPrice"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="Price"
+        required
+      />
+      <select id="newProductCategory" required>
+        <option value="coffee">Coffee</option>
+        <option value="tea">Tea</option>
+        <option value="pastries">Pastries</option>
+      </select>
 
       <label class="product-file" for="newProductImage">
         <span class="product-file-icon" aria-hidden="true">↑</span>
         <span class="product-file-text">Choose product photo</span>
-        <input id="newProductImage" type="file" accept="image/*" />
+        <input id="newProductImage" type="file" accept="image/*" required />
       </label>
 
-      <button type="button" class="add-product-btn">Add product</button>
-    </div>
+      <p class="new-product-message" id="newProductMessage"></p>
+      <button type="submit" class="add-product-btn">Add product</button>
+    </form>
     <section class="cards-section" style="padding-top: 0">
       <p id="adminMessage" class="admin-message"></p>
       <div class="grid" id="productGrid"></div>

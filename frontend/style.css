@@ -699,9 +699,21 @@ footer a {
   font: inherit;
 }
 
-.newproductdiv input:focus {
+.newproductdiv input:focus,
+.newproductdiv select:focus {
   outline: 2px solid #b8a795;
   outline-offset: 2px;
+}
+
+.newproductdiv select {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 11px 12px;
+  border: 1px solid #6f5a4c;
+  border-radius: 5px;
+  background-color: #2b1f1d;
+  color: #f3ece4;
+  font: inherit;
 }
 
 .product-file {
@@ -765,6 +777,14 @@ footer a {
 
 .add-product-btn:hover {
   background-color: #d2c0ae;
+}
+
+.new-product-message {
+  min-height: 20px;
+  margin: 0 0 10px;
+  color: #d7c5b3;
+  font-size: 13px;
+  text-align: center;
 }
 
 .remove-item {

@@ -18,6 +18,12 @@ const message = document.getElementById("adminMessage");
 const tabs = document.querySelectorAll("#adminTabs a");
 const newProductToggle = document.getElementById("newProductToggle");
 const newProductForm = document.getElementById("newProductForm");
+const newProductName = document.getElementById("newProductName");
+const newProductDescription = document.getElementById("newProductDescription");
+const newProductPrice = document.getElementById("newProductPrice");
+const newProductCategory = document.getElementById("newProductCategory");
+const newProductImage = document.getElementById("newProductImage");
+const newProductMessage = document.getElementById("newProductMessage");
 
 const editModal = document.getElementById("editModal");
 const editForm = document.getElementById("editForm");
@@ -160,6 +166,48 @@ newProductToggle.addEventListener("click", () => {
   const isOpen = newProductForm.style.display === "block";
   newProductForm.style.display = isOpen ? "none" : "block";
   newProductToggle.textContent = isOpen ? "Add new product" : "Hide form";
+});
+
+newProductForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  newProductMessage.textContent = "";
+
+  const image = newProductImage.files[0];
+  if (!image) {
+    newProductMessage.textContent = "Choose a product photo.";
+    return;
+  }
+
+  const imageData = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(image);
+  });
+
+  try {
+    const data = await adminFetch(`${API}/products`, {
+      method: "POST",
+      body: JSON.stringify({
+        name: newProductName.value.trim(),
+        category: newProductCategory.value,
+        price: newProductPrice.value,
+        description: newProductDescription.value.trim(),
+        image: imageData,
+      }),
+    });
+
+    products.push(data.product);
+    currentCategory = "all";
+    tabs.forEach((tab) =>
+      tab.classList.toggle("active", tab.dataset.category === "all"),
+    );
+    showProducts();
+    newProductMessage.textContent = "Product added.";
+    newProductForm.reset();
+  } catch (err) {
+    newProductMessage.textContent = err.message;
+  }
 });
 
 document.getElementById("editClose").addEventListener("click", closeEdit);
