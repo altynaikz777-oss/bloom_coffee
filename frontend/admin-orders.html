@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bloom Coffee - Admin Orders</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="orders.css" />
+  </head>
+  <body>
+    <header>
+      <a href="home.html" class="logo">Bloom Coffee</a>
+      <nav style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+        <a href="home.html">Home</a>
+        <a href="admin.html">Products</a>
+        <a href="admin-orders.html" class="active">Orders</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </header>
+
+    <div class="page-header">
+      <h1>Admin: Orders</h1>
+      <p>Follow each order from the counter to the customer.</p>
+    </div>
+
+    <div class="menu-tabs" id="orderTabs">
+      <a href="#" data-status="all" class="active">All</a>
+      <a href="#" data-status="new">New</a>
+      <a href="#" data-status="preparing">Preparing</a>
+      <a href="#" data-status="ready">Ready</a>
+      <a href="#" data-status="completed">Completed</a>
+      <a href="#" data-status="cancelled">Cancelled</a>
+    </div>
+
+    <section class="cards-section" style="padding-top: 0">
+      <p id="orderMessage" class="admin-message"></p>
+      <div class="orders-list" id="ordersList"></div>
+    </section>
+
+    <script src="admin-orders.js"></script>
+  </body>
+</html>

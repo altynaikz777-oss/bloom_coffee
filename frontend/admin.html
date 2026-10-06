@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-
     <header>
       <a href="home.html" class="logo">Bloom Coffee</a>
       <nav
@@ -21,6 +20,7 @@
         <a href="menu.html" class="active">Menu</a>
         <a href="contact.html">Contact</a>
         <a href="cart.html">Cart</a>
+        <a href="admin-orders.html">Orders</a>
         <a>
           <img
             style="width: 28px; opacity: 0.9; padding-top: 4px"
@@ -29,13 +29,15 @@
         /></a>
       </nav>
     </header>
-
-
-    <div class="page-header">
-      <h1>Admin: Menu</h1>
-      <p>Edit or delete products. Changes are saved to the database.</p>
+    <div class="row">
+      <div class="page-header">
+        <h1>Admin: Menu</h1>
+        <p>Edit or delete products. Changes are saved to the database.</p>
+      </div>
+      <button type="button" class="newpro" id="newProductToggle">
+        Add new product
+      </button>
     </div>
-
 
     <div class="menu-tabs" id="adminTabs">
       <a href="#" data-category="all" class="active">All</a>
@@ -43,17 +45,42 @@
       <a href="#" data-category="tea">Tea</a>
       <a href="#" data-category="pastries">Pastries</a>
     </div>
+    <form class="newproductdiv" id="newProductForm">
+      <input id="newProductName" type="text" placeholder="Name" required />
+      <input id="newProductDescription" type="text" placeholder="Description" />
+      <input
+        id="newProductPrice"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="Price"
+        required
+      />
+      <select id="newProductCategory" required>
+        <option value="coffee">Coffee</option>
+        <option value="tea">Tea</option>
+        <option value="pastries">Pastries</option>
+      </select>
 
+      <label class="product-file" for="newProductImage">
+        <span class="product-file-icon" aria-hidden="true">↑</span>
+        <span class="product-file-text">Choose product photo</span>
+        <input id="newProductImage" type="file" accept="image/*" required />
+      </label>
 
+      <p class="new-product-message" id="newProductMessage"></p>
+      <button type="submit" class="add-product-btn">Add product</button>
+    </form>
     <section class="cards-section" style="padding-top: 0">
       <p id="adminMessage" class="admin-message"></p>
       <div class="grid" id="productGrid"></div>
     </section>
 
-
     <div class="modal-overlay" id="editModal">
       <div class="modal-box">
-        <button class="modal-close" id="editClose" aria-label="Close">&times;</button>
+        <button class="modal-close" id="editClose" aria-label="Close">
+          &times;
+        </button>
         <form class="modal-form" id="editForm">
           <label for="editName">Name</label>
           <input type="text" id="editName" required />
@@ -67,12 +94,13 @@
           <label for="editImage">Image (path or URL)</label>
           <input type="text" id="editImage" />
 
-          <button type="submit" class="btn-add" id="editSave">Save changes</button>
+          <button type="submit" class="btn-add" id="editSave">
+            Save changes
+          </button>
           <p class="modal-message" id="editMessage"></p>
         </form>
       </div>
     </div>
-
 
     <footer>
       <div>
@@ -85,13 +113,22 @@
         <p>18 Willow Street</p>
         <p>Open daily, 7:00am–5:00pm</p>
         <p>hello@bloomcoffee.com</p>
-        <p>Instagram</p>
+        <a href="https://www.instagram.com/bloomroom.cafe/" target="_blank" rel="noopener noreferrer">
+          <p>Instagram</p>
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77057774440&text&type=phone_number&app_absent=0&utm_source=ig" target="_blank" rel="noopener noreferrer">
+          <p>WhatsApp</p>
+        </a>
+        <a href="https://www.threads.com/@bloomroom.cafe?xmt=AQG0Fzpx8PsKDEuo88Lr_hNz3aJ8oqMNNfnIL5SgJDZgBr0">
+          <p>Threads</p>
+        </a>
       </div>
       <div class="footer-col">
         <a href="homepage.html">Home</a>
         <a href="menu.html">Menu</a>
         <a href="contact.html">Contact</a>
         <a href="cart.html">Cart</a>
+        
       </div>
     </footer>
     <script src="admin.js"></script>

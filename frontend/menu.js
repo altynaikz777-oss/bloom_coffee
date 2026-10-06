@@ -34,7 +34,6 @@ function renderCard(product) {
   price.className = "price";
   price.textContent = "$" + Number(product.price).toFixed(2);
 
-
   const add = document.createElement("a");
   add.href = "#";
   add.className = "btn-add";

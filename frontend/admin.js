@@ -12,11 +12,19 @@ function getAdminPassword(forcePrompt = false) {
   }
   return password;
 }
- 
+
 const grid = document.getElementById("productGrid");
 const message = document.getElementById("adminMessage");
 const tabs = document.querySelectorAll("#adminTabs a");
- 
+const newProductToggle = document.getElementById("newProductToggle");
+const newProductForm = document.getElementById("newProductForm");
+const newProductName = document.getElementById("newProductName");
+const newProductDescription = document.getElementById("newProductDescription");
+const newProductPrice = document.getElementById("newProductPrice");
+const newProductCategory = document.getElementById("newProductCategory");
+const newProductImage = document.getElementById("newProductImage");
+const newProductMessage = document.getElementById("newProductMessage");
+
 const editModal = document.getElementById("editModal");
 const editForm = document.getElementById("editForm");
 const editName = document.getElementById("editName");
@@ -24,20 +32,19 @@ const editPrice = document.getElementById("editPrice");
 const editDescription = document.getElementById("editDescription");
 const editImage = document.getElementById("editImage");
 const editMessage = document.getElementById("editMessage");
- 
+
 let products = [];
 let currentCategory = "all";
 let editingId = null;
- 
+
 function showMessage(text) {
   message.textContent = text;
 }
- 
 
 async function adminFetch(url, options) {
   const password = getAdminPassword();
   if (!password) throw new Error("Admin password is required");
- 
+
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -46,7 +53,7 @@ async function adminFetch(url, options) {
     },
   });
   const data = await response.json();
- 
+
   if (response.status === 403) {
     sessionStorage.removeItem("bloomAdminPassword");
     throw new Error("Wrong admin password. Try again.");
@@ -54,54 +61,57 @@ async function adminFetch(url, options) {
   if (!response.ok) throw new Error(data.error || "Something went wrong");
   return data;
 }
- 
+
 function renderCard(product) {
   const card = document.createElement("div");
   card.className = "card";
- 
+
   const img = document.createElement("img");
   img.src = product.image || "./images/espresso.jpg";
   img.alt = product.name;
- 
+
   const content = document.createElement("div");
   content.className = "card-content";
- 
+
   const title = document.createElement("h3");
   title.className = "card-title";
   title.textContent = product.name;
- 
+
   const desc = document.createElement("p");
   desc.className = "card-desc";
   desc.textContent = product.description || "";
- 
+
   const footer = document.createElement("div");
   footer.className = "card-footer";
   const price = document.createElement("span");
   price.className = "price";
   price.textContent = "$" + Number(product.price).toFixed(2);
   footer.appendChild(price);
- 
+
   const actions = document.createElement("div");
   actions.className = "card-admin-actions";
- 
+
   const editBtn = document.createElement("button");
   editBtn.type = "button";
   editBtn.className = "btn-edit";
   editBtn.textContent = "Edit";
   editBtn.addEventListener("click", () => openEdit(product));
- 
+
   const deleteBtn = document.createElement("button");
   deleteBtn.type = "button";
   deleteBtn.className = "btn-delete";
   deleteBtn.textContent = "Delete";
   deleteBtn.addEventListener("click", () => deleteProduct(product));
- 
+ const priceandbuttons = document.createElement("div");
+  priceandbuttons.className = "price-and-buttons";
+  priceandbuttons.append(actions , footer);
+  
   actions.append(editBtn, deleteBtn);
-  content.append(title, desc, footer, actions);
+  content.append(title, desc, priceandbuttons);
   card.append(img, content);
   return card;
 }
- 
+
 function showProducts() {
   grid.innerHTML = "";
   const visible = products.filter(
@@ -114,7 +124,7 @@ function showProducts() {
   showMessage("");
   visible.forEach((p) => grid.appendChild(renderCard(p)));
 }
- // getting products from database
+// getting products from database
 async function loadProducts() {
   try {
     const response = await fetch(`${API}/products`);
@@ -125,8 +135,8 @@ async function loadProducts() {
     showMessage(err.message);
   }
 }
- 
-// deleting products from database 
+
+// deleting products from database
 async function deleteProduct(product) {
   if (!confirm(`Delete "${product.name}"?`)) return;
   try {
@@ -139,7 +149,7 @@ async function deleteProduct(product) {
   }
 }
  
-// editing products from database
+
 function openEdit(product) {
   editingId = product.id;
   editName.value = product.name;
@@ -149,21 +159,69 @@ function openEdit(product) {
   editMessage.textContent = "";
   editModal.classList.add("open");
 }
- 
+
 function closeEdit() {
   editModal.classList.remove("open");
   editingId = null;
 }
- 
+
+newProductToggle.addEventListener("click", () => {
+  const isOpen = newProductForm.style.display === "block";
+  newProductForm.style.display = isOpen ? "none" : "block";
+  newProductToggle.textContent = isOpen ? "Add new product" : "Hide form";
+});
+
+newProductForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  newProductMessage.textContent = "";
+
+  const image = newProductImage.files[0];
+  if (!image) {
+    newProductMessage.textContent = "Choose a product photo.";
+    return;
+  }
+
+  const imageData = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(image);
+  });
+
+  try {
+    const data = await adminFetch(`${API}/products`, {
+      method: "POST",
+      body: JSON.stringify({
+        name: newProductName.value.trim(),
+        category: newProductCategory.value,
+        price: newProductPrice.value,
+        description: newProductDescription.value.trim(),
+        image: imageData,
+      }),
+    });
+
+    products.push(data.product);
+    currentCategory = "all";
+    tabs.forEach((tab) =>
+      tab.classList.toggle("active", tab.dataset.category === "all"),
+    );
+    showProducts();
+    newProductMessage.textContent = "Product added.";
+    newProductForm.reset();
+  } catch (err) {
+    newProductMessage.textContent = err.message;
+  }
+});
+
 document.getElementById("editClose").addEventListener("click", closeEdit);
 editModal.addEventListener("click", (e) => {
   if (e.target === editModal) closeEdit();
 });
- // editing products from database
+// editing products from database
 editForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   editMessage.textContent = "";
- 
+
   try {
     const data = await adminFetch(`${API}/products/${editingId}`, {
       method: "PUT",
@@ -174,7 +232,7 @@ editForm.addEventListener("submit", async (e) => {
         image: editImage.value.trim(),
       }),
     });
- 
+
     products = products.map((p) => (p.id === editingId ? data.product : p));
     closeEdit();
     showProducts();
@@ -183,7 +241,6 @@ editForm.addEventListener("submit", async (e) => {
     editMessage.textContent = err.message;
   }
 });
- 
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", (e) => {
@@ -194,6 +251,5 @@ tabs.forEach((tab) => {
     showProducts();
   });
 });
- 
+
 loadProducts();
- 
