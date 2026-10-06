@@ -430,7 +430,6 @@ footer a {
   overflow: hidden;
 }
 
-
 .card img {
   width: 100%;
   height: 260px;
@@ -476,7 +475,6 @@ footer a {
   border: none;
 }
 
-
 .page-header {
   padding: 60px 60px 30px 60px;
 }
@@ -494,7 +492,6 @@ footer a {
   font-size: 15px;
 }
 
-
 .menu-tabs {
   padding: 0 60px 40px 60px;
 }
@@ -510,7 +507,6 @@ footer a {
   border-bottom: 1px solid #ffffff;
   padding-bottom: 4px;
 }
-
 
 .contact-container {
   display: flex;
@@ -593,7 +589,6 @@ footer a {
   cursor: pointer;
   font-size: 14px;
 }
-
 
 .cart-container {
   padding: 60px;
@@ -851,6 +846,21 @@ body.admin-page {
   color: #332720;
   font-family: Arial, sans-serif;
 }
+.remove-item {
+  margin-left: 10px;
+  background: transparent;
+  border: 1px solid #6f5a4c;
+  border-radius: 5px;
+  color: #b8a795;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.remove-item:hover {
+  background-color: #6f5a4c;
+  color: #ffffff;
+}
 
 .admin-header {
   width: min(100%, 1100px);
@@ -923,8 +933,11 @@ body.admin-page {
   font: inherit;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 160ms ease, background 160ms ease,
-    border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .category-button {
@@ -995,7 +1008,9 @@ body.admin-page {
   border-radius: 16px;
   background: #fffefa;
   box-shadow: 0 10px 30px rgb(55 36 25 / 7%);
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .product-card:hover {
@@ -1031,7 +1046,7 @@ button:focus-visible {
   outline: 3px solid #c98e5e;
   outline-offset: 3px;
 }
-.btn-delete{
+.btn-delete {
   background-color: #e7b7b0;
   color: #bd5548;
   border: 1px solid #e7b7b0;
@@ -1040,10 +1055,13 @@ button:focus-visible {
   font: inherit;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 160ms ease, background 160ms ease,
-    border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
-.btn-edit{
+.btn-edit {
   margin-right: 10px;
   background-color: #68452f;
   color: #fff;
@@ -1053,15 +1071,17 @@ button:focus-visible {
   font: inherit;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 160ms ease, background 160ms ease,
-    border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
-.price-and-buttons{
+.price-and-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
 }
 @media (max-width: 600px) {
   body.admin-page {
@@ -1084,7 +1104,6 @@ button:focus-visible {
   .product-grid {
     grid-template-columns: 1fr;
   }
-  
 }
 .orders-list {
   display: flex;
@@ -1222,7 +1241,9 @@ button:focus-visible {
   border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
-  transition: background-color 160ms ease, transform 160ms ease;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
 }
 
 .order-actions button:hover {
