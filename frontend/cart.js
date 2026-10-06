@@ -122,11 +122,56 @@ function removeItem(id) {
 const checkoutBtn = document.getElementById("checkoutBtn");
 
 if (checkoutBtn !== null) {
-  checkoutBtn.onclick = function () {
-    saveCart([]);
+  checkoutBtn.onclick = async function (e) {
+    e.preventDefault();
 
-    document.getElementById("cartItems").innerHTML = "";
-    document.getElementById("orderSuccess").style.display = "block";
+    const cart = getCart();
+    const user = JSON.parse(localStorage.getItem("bloomUser") || "null");
+
+    if (!user) {
+      alert("Please log in first!");
+      window.location.href = "home.html?login=1";
+      return;
+    }
+
+    if (cart.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
+    try {
+      const responses = await Promise.all(
+        cart.map((item) =>
+          fetch("http://localhost:3000/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name:
+                item.quantity > 1
+                  ? `${item.name} × ${item.quantity}`
+                  : item.name,
+              price: item.price * item.quantity,
+              user_id: user.id,
+            }),
+          }),
+        ),
+      );
+
+      const failed = responses.find((r) => !r.ok);
+      if (failed) {
+        const data = await failed.json().catch(() => ({}));
+        throw new Error(
+          `Order failed (${failed.status}): ${data.error || "unknown error"}`,
+        );
+      }
+
+      saveCart([]);
+      showCart();
+      document.getElementById("orderSuccess").style.display = "block";
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
   };
 }
 
