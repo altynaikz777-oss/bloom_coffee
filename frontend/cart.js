@@ -167,6 +167,7 @@ if (checkoutBtn !== null) {
 
       saveCart([]);
       showCart();
+      checkoutBtn.closest(".cart-container").style.display = "none";
       document.getElementById("orderSuccess").style.display = "block";
     } catch (err) {
       console.error(err);
