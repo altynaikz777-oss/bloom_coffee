@@ -1,13 +1,9 @@
 const API = "http://localhost:3000";
- 
-// ---- Only admins may stay on this page ----
 const user = JSON.parse(localStorage.getItem("bloomUser") || "null");
 if (!user || user.role !== "admin") {
   window.location.href = "home.html";
 }
- 
-// The server checks the x-admin-password header on PUT and DELETE.
-// Ask for it once and keep it for this browser tab only.
+
 function getAdminPassword(forcePrompt = false) {
   let password = sessionStorage.getItem("bloomAdminPassword");
   if (!password || forcePrompt) {
@@ -37,7 +33,7 @@ function showMessage(text) {
   message.textContent = text;
 }
  
-// Send PUT / DELETE with the admin password; ask again if it was wrong.
+
 async function adminFetch(url, options) {
   const password = getAdminPassword();
   if (!password) throw new Error("Admin password is required");
@@ -118,7 +114,7 @@ function showProducts() {
   showMessage("");
   visible.forEach((p) => grid.appendChild(renderCard(p)));
 }
- 
+ // getting products from database
 async function loadProducts() {
   try {
     const response = await fetch(`${API}/products`);
@@ -130,7 +126,7 @@ async function loadProducts() {
   }
 }
  
-// ---- Delete ----
+// deleting products from database 
 async function deleteProduct(product) {
   if (!confirm(`Delete "${product.name}"?`)) return;
   try {
@@ -143,7 +139,7 @@ async function deleteProduct(product) {
   }
 }
  
-// ---- Edit ----
+// editing products from database
 function openEdit(product) {
   editingId = product.id;
   editName.value = product.name;
@@ -163,7 +159,7 @@ document.getElementById("editClose").addEventListener("click", closeEdit);
 editModal.addEventListener("click", (e) => {
   if (e.target === editModal) closeEdit();
 });
- 
+ // editing products from database
 editForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   editMessage.textContent = "";
@@ -188,7 +184,7 @@ editForm.addEventListener("submit", async (e) => {
   }
 });
  
-// ---- Category tabs ----
+
 tabs.forEach((tab) => {
   tab.addEventListener("click", (e) => {
     e.preventDefault();

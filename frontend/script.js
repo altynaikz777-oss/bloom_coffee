@@ -1,5 +1,64 @@
+async function products() {
+  const grid = document.querySelector(".grid");
+  if (!grid) return;
+
+  const response = await fetch("http://localhost:3000/products");
+  const productList = await response.json();
+
+  productList.forEach((product) => {
+    grid.innerHTML += `
+      <div class="card">
+        <img src="${product.image}" alt="${product.name}">
+        <div class="card-content">
+          <h3 class="card-title">${product.name}</h3>
+          <p class="card-desc">${product.description || ""}</p>
+          <div class="card-footer">
+            <span class="price">$${Number(product.price).toFixed(2)}</span>
+            <button class="btn-add">Add to cart</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  const addButtons = grid.querySelectorAll(".btn-add");
+
+  addButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      if (localStorage.getItem("bloomUser") === null) {
+        alert("Please log in first!");
+        openModal();
+        switchTab("login");
+        return;
+      }
+
+      addToCart(productList[index]);
+      button.textContent = "Added";
+    });
+  });
+}
+
+products();
+///////
+
 function openModal() {
+  // if the user is already logged in, the icon works as "log out"
+  const savedUser = localStorage.getItem("bloomUser");
+  if (savedUser !== null) {
+    const user = JSON.parse(savedUser);
+    if (confirm("You are logged in as " + user.username + ". Log out?")) {
+      logout();
+    }
+    return;
+  }
+
   document.getElementById("accountModal").classList.add("open");
+}
+
+function logout() {
+  localStorage.removeItem("bloomUser");
+  localStorage.removeItem("bloomCart"); // the cart belongs to this user, so clear it
+  window.location.href = "home.html";
 }
 
 function closeModal() {
@@ -37,7 +96,7 @@ async function handleRegister(e) {
   const message = document.getElementById("registerMessage");
 
   try {
-    const response = await fetch('http://localhost:3000/register', {
+    const response = await fetch("http://localhost:3000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(person),
@@ -51,7 +110,8 @@ async function handleRegister(e) {
     }
 
     localStorage.setItem("bloomUser", JSON.stringify(data.user));
-    window.location.href = data.user.role === "admin" ? "admin.html" : "menu.html";
+    window.location.href =
+      data.user.role === "admin" ? "admin.html" : "menu.html";
   } catch (err) {
     console.error(err);
     message.textContent = "Cannot reach the server. Is it running?";
@@ -69,7 +129,7 @@ async function handleLogin(event) {
   };
 
   try {
-    const response = await fetch('http://localhost:3000/login', {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(person),
@@ -92,11 +152,8 @@ async function handleLogin(event) {
   }
 }
 
-let addbtns = document.querySelectorAll(".btn-add");
-addbtns.forEach((element) => {
-  element.addEventListener("click", function () {
-    element.textContent =
-      element.textContent === "Added" ? "Add to cart" : "Added";
-  });
-});
- 
+// ?login=1 in the address -> open the login window right away
+if (new URLSearchParams(window.location.search).get("login")) {
+  openModal();
+  switchTab("login");
+}

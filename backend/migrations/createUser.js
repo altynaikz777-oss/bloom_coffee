@@ -10,7 +10,7 @@ const pool = new Pool({
   host: process.env.HOST,
   database: process.env.DATABASE,
   port: process.env.PORT,
-  password: process.env.PASSWORD,
+  password: process.env.DB_PASSWORD,
 });
 
 async function createUsersTable() {
