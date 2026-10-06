@@ -1,5 +1,27 @@
 {
   "dependencies": {
-    "dotenv": "^18.0.5"
-  }
+    "bcrypt": "^6.0.0",
+    "co-body": "^6.2.0",
+    "dotenv": "^18.0.5",
+    "pg": "^8.23.1"
+  },
+  "name": "bloom_coffee",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/altynaikz777-oss/bloom_coffee.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/altynaikz777-oss/bloom_coffee/issues"
+  },
+  "homepage": "https://github.com/altynaikz777-oss/bloom_coffee#readme"
 }
