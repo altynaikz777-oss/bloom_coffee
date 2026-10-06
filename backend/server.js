@@ -11,7 +11,7 @@ const pool = new Pool({
   host: process.env.HOST,
   database: process.env.DATABASE,
   port: process.env.PORT,
-  password: String(process.env.DB_PASSWORD || ""),
+  password: String(process.env.PASSWORD || ""),
 });
 
 function sendJSON(res, statusCode, data) {
@@ -139,6 +139,50 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  const accountParts = req.url.split("/");
+  const accountId = Number(accountParts[2]);
+  const hasAccountId =
+    accountParts[1] === "accounts" &&
+    accountParts.length === 3 &&
+    Number.isInteger(accountId) &&
+    accountId > 0;
+
+  if (hasAccountId && req.method === "PUT") {
+    try {
+      const body = await parse.json(req);
+      const { rows } = await pool.query(
+        `UPDATE accounts SET username = $1 WHERE id = $2 RETURNING id, username, role`,
+        [body.username || null, accountId],
+      );
+
+      if (rows.length === 0) {
+        return sendJSON(res, 404, { error: "User not found" });
+      }
+
+      return sendJSON(res, 200, { message: "User updated", user: rows[0] });
+    } catch (err) {
+      console.error("Error updating user:", err);
+      return sendJSON(res, 500, { error: "Server error" });
+    }
+  }
+
+  if (hasAccountId && req.method === "DELETE") {
+    try {
+      const { rowCount } = await pool.query(
+        "DELETE FROM accounts WHERE id = $1",
+        [accountId],
+      );
+
+      if (rowCount === 0) {
+        return sendJSON(res, 404, { error: "User not found" });
+      }
+
+      return sendJSON(res, 200, { message: "User deleted" });
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      return sendJSON(res, 500, { error: "Server error" });
+    }
+  }
 
   if (req.url === "/products" && req.method === "GET") {
     try {
@@ -180,6 +224,33 @@ const server = http.createServer(async (req, res) => {
     productParts.length === 3 &&
     Number.isInteger(productId) &&
     productId > 0;
+
+  if (hasProductId && req.method === "PUT") {
+    try {
+      const body = await parse.json(req);
+      const { name, price, description, image } = body;
+
+      const result = await pool.query(
+        "UPDATE products SET name = $1, price = $2, description = $3, image = $4 WHERE id = $5 RETURNING *",
+        [name, price, description, image, productId],
+      );
+
+      if (result.rows.length === 0) {
+        return sendJSON(res, 404, { error: "Product not found" });
+      }
+
+      return sendJSON(res, 200, {
+        message: "Product updated",
+        product: result.rows[0],
+      });
+    } catch (err) {
+      console.error("Error updating product:", err);
+      return sendJSON(res, 500, { error: "Server error" });
+    }
+  }
+
+  if (hasProductId && req.method === "DELETE") {
+  }
 
   if (hasProductId && req.method === "PUT") {
     const admin = checkAdmin(req);
@@ -228,109 +299,6 @@ const server = http.createServer(async (req, res) => {
       return sendJSON(res, 500, { error: "Server error" });
     }
   }
-
-if (req.url === "/orders" && req.method === "GET") {
-  try {
-    const result = await pool.query("SELECT * FROM orders ORDER BY id");
-    return sendJSON(res, 200, result.rows);
-  } catch (err) {
-    console.error("Error fetching orders:", err);
-    return sendJSON(res, 500, { error: "Server error" });
-  }
-}
-
-if (req.url === "/orders" && req.method === "POST") {
-  try {
-    const body = await parse.json(req);
-    const { name, price, user_id } = body;
-
-    if (!name || !price || !user_id) {
-      return sendJSON(res, 400, { error: "Fill in all fields!" });
-    }
-
-    const result = await pool.query(
-      "INSERT INTO orders (name, price, user_id) VALUES ($1, $2, $3) RETURNING *",
-      [name, price, user_id],
-    );
-
-    return sendJSON(res, 201, {
-      message: "Order placed successfully",
-      order: result.rows[0],
-    });
-  } catch (err) {
-    console.error("Error creating order:", err);
-    return sendJSON(res, 500, { error: "Server error" });
-  }
-}
-
-const orderParts = req.url.split("/");
-const orderId = Number(orderParts[2]);
-const hasOrderId =
-  orderParts[1] === "orders" &&
-  orderParts.length === 3 &&
-  Number.isInteger(orderId) &&
-  orderId > 0;
-
-if (hasOrderId && req.method === "PUT") {
-  if (!checkAdmin(req)) {
-    return sendJSON(res, 403, { error: "Admin access required" });
-  }
-  try {
-    const body = await parse.json(req);
-    const { status } = body;
-
-    const result = await pool.query(
-      "UPDATE orders SET status = $1 WHERE id = $2 RETURNING *",
-      [status || "pending", orderId],
-    );
-
-    if (result.rows.length === 0) {
-      return sendJSON(res, 404, { error: "Order not found" });
-    }
-
-    return sendJSON(res, 200, {
-      message: "Order updated",
-      order: result.rows[0],
-    });
-  } catch (err) {
-    console.error("Error updating order:", err);
-    return sendJSON(res, 500, { error: "Server error" });
-  }
-}
-
-if (hasOrderId && req.method === "DELETE") {
-  try {
-    const body = await parse.json(req);
-    const { user_id } = body;
-
-    if (!user_id) {
-      return sendJSON(res, 400, { error: "User ID required" });
-    }
-
-    const checkOrder = await pool.query(
-      "SELECT * FROM orders WHERE id = $1 AND user_id = $2",
-      [orderId, user_id],
-    );
-
-    if (checkOrder.rows.length === 0) {
-      return sendJSON(res, 403, { error: "You can only cancel your own orders" });
-    }
-
-    const result = await pool.query("DELETE FROM orders WHERE id = $1", [
-      orderId,
-    ]);
-
-    if (result.rowCount === 0) {
-      return sendJSON(res, 404, { error: "Order not found" });
-    }
-
-    return sendJSON(res, 200, { message: "Order cancelled successfully" });
-  } catch (err) {
-    console.error("Error cancelling order:", err);
-    return sendJSON(res, 500, { error: "Server error" });
-  }
-}
-
 
   return sendJSON(res, 404, { error: "Route not found!" });
 });

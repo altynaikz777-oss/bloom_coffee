@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Bloom Coffee - My Orders</title>
+    <title>Bloom Coffee - Admin Orders</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="orders.css" />
   </head>
@@ -11,16 +11,24 @@
       <a href="home.html" class="logo">Bloom Coffee</a>
       <nav style="display: flex; flex-direction: row; justify-content: center; align-items: center">
         <a href="home.html">Home</a>
-        <a href="menu.html">Menu</a>
+        <a href="admin.html">Products</a>
+        <a href="admin-orders.html" class="active">Orders</a>
         <a href="contact.html">Contact</a>
-        <a href="order.html" class="active">Orders</a>
-        <a href="cart.html">Cart</a>
       </nav>
     </header>
 
     <div class="page-header">
-      <h1>My orders</h1>
-      <p>Follow your order from the counter to your cup.</p>
+      <h1>Admin: Orders</h1>
+      <p>Follow each order from the counter to the customer.</p>
+    </div>
+
+    <div class="menu-tabs" id="orderTabs">
+      <a href="#" data-status="all" class="active">All</a>
+      <a href="#" data-status="new">New</a>
+      <a href="#" data-status="preparing">Preparing</a>
+      <a href="#" data-status="ready">Ready</a>
+      <a href="#" data-status="completed">Completed</a>
+      <a href="#" data-status="cancelled">Cancelled</a>
     </div>
 
     <section class="cards-section" style="padding-top: 0">
@@ -28,7 +36,6 @@
       <div class="orders-list" id="ordersList"></div>
     </section>
 
-    <script src="cart.js"></script>
-    <script src="order.js"></script>
+    <script src="admin-orders.js"></script>
   </body>
 </html>

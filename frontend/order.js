@@ -13,6 +13,13 @@ const STATUS_TEXT = {
   cancelled: "Cancelled",
 };
 
+const STATUS_NOTE = {
+  preparing: "We are making your order now.",
+  ready: "Your order is ready. Come to the counter to pick it up.",
+  completed: "Your order is complete. Enjoy!",
+  cancelled: "This order was cancelled.",
+};
+
 const ordersList = document.getElementById("ordersList");
 const orderMessage = document.getElementById("orderMessage");
 
@@ -64,7 +71,11 @@ function renderOrder(order) {
     foot.appendChild(actions);
   }
 
-  card.append(head, items, foot);
+  card.append(head, items);
+  if (STATUS_NOTE[stage]) {
+    card.appendChild(el("p", "order-meta", STATUS_NOTE[stage]));
+  }
+  card.appendChild(foot);
   return card;
 }
 
