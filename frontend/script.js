@@ -1,31 +1,71 @@
-// let grid = document.querySelector(".grid");
-// document.addEventListener("DOMContentLoaded", function () {
-//   async function add() {
-//     let url = "./data.json";
-//     let promise = await fetch(url);
-//     let data = await promise.json();
-//     console.log(data);
-//     for (let i = 0; i < data.lenght; i++) {
-//       grid.innerHTML += `
-//   <div class="card">
-//           <img src="${data[i].image}" />
-//           <div class="card-content">
-//             <h3 class="card-title">${data[i].name}</h3>
-//             <p class="card-desc">
-//              ${data[i].description}
-//             </p>
-//             <div class="card-footer">
-//               <span class="price">$${data[i].price}</span>
-//               <a href="cart.html" class="btn-add">Add to cart</a>
-//             </div>
-//           </div>
-//         </div>`;
-//     }
-//   }
-//   add();
-// });
+async function loadHomeProducts() {
+  const grid = document.querySelector(".grid");
+  if (!grid) return;
+
+  const response = await fetch("http://localhost:3000/products");
+  const productList = await response.json();
+
+  productList.forEach((product) => {
+    grid.innerHTML += `
+      <div class="card">
+        <img src="${product.image}" alt="${product.name}">
+        <div class="card-content">
+          <h3 class="card-title">${product.name}</h3>
+          <p class="card-desc">${product.description || ""}</p>
+          <div class="card-footer">
+            <span class="price">$${Number(product.price).toFixed(2)}</span>
+            <button class="btn-add">Add to cart</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  const addButtons = grid.querySelectorAll(".btn-add");
+
+  addButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      if (localStorage.getItem("bloomUser") === null) {
+        alert("Please log in first!");
+        openModal();
+        switchTab("login");
+        return;
+      }
+      addToCart(productList[index]);
+      button.textContent = "Added";
+    });
+  });
+}
+
+loadHomeProducts();
+
+function filterProducts(category) {
+  document.querySelectorAll(".card").forEach((card) => {
+    card.style.display = card.dataset.category === category ? "block" : "none";
+  });
+}
+filterProducts("coffee");
+filterProducts("tea");
+filterProducts("pastries");
+///////
+
 function openModal() {
+  const savedUser = localStorage.getItem("bloomUser");
+  if (savedUser !== null) {
+    const user = JSON.parse(savedUser);
+    if (confirm("You are logged in as " + user.username + ". Log out?")) {
+      logout();
+    }
+    return;
+  }
+
   document.getElementById("accountModal").classList.add("open");
+}
+
+function logout() {
+  localStorage.removeItem("bloomUser");
+  localStorage.removeItem("bloomCart");
+  window.location.href = "home.html";
 }
 
 function closeModal() {
@@ -51,8 +91,8 @@ function switchTab(tab) {
   }
 }
 
-async function handleRegister(event) {
-  event.preventDefault();
+async function handleRegister(e) {
+  e.preventDefault();
 
   const person = {
     username: document.getElementById("regUsername").value,
@@ -60,52 +100,66 @@ async function handleRegister(event) {
     password: document.getElementById("regPassword").value,
   };
 
-  const response = await fetch("http://localhost:3000/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(person),
-  });
+  const message = document.getElementById("registerMessage");
 
-  const data = await response.json();
+  try {
+    const response = await fetch("http://localhost:3000/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(person),
+    });
 
-  if (!response.ok) {
-    document.getElementById("registerMessage").textContent =
-      data.error || "Something went wrong";
-    return;
+    const data = await response.json();
+
+    if (!response.ok) {
+      message.textContent = data.error || "Something went wrong";
+      return;
+    }
+
+    localStorage.setItem("bloomUser", JSON.stringify(data.user));
+    window.location.href =
+      data.user.role === "admin" ? "admin.html" : "menu.html";
+  } catch (err) {
+    console.error(err);
+    message.textContent = "Cannot reach the server. Is it running?";
   }
-  console.log(data);
-  document.getElementById("registerMessage").textContent = "Account created!";
 }
+
 async function handleLogin(event) {
   event.preventDefault();
+  const message = document.getElementById("loginMessage");
+  message.textContent = "";
 
   const person = {
-    email: document.getElementById("loginEmail").value,
+    email: document.getElementById("loginEmail").value.trim(),
     password: document.getElementById("loginPassword").value,
   };
 
-  const response = await fetch("http://localhost:3000/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(person),
-  });
+  try {
+    const response = await fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(person),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (!response.ok) {
-    document.getElementById("loginMessage").textContent =
-      data.error || "Something went wrong";
-    return;
+    if (!response.ok) {
+      message.textContent = data.error || "Something went wrong";
+      return;
+    }
+
+    const user = data.user;
+    localStorage.setItem("bloomUser", JSON.stringify(user));
+
+    window.location.href = user.role === "admin" ? "admin.html" : "menu.html";
+  } catch (err) {
+    console.error(err);
+    message.textContent = "Cannot reach the server. Is it running?";
   }
-
-  console.log(data);
-  document.getElementById("loginMessage").textContent = "Logged in!";
 }
 
-let addbtns = document.querySelectorAll(".btn-add");
-addbtns.forEach((element) => {
-  element.addEventListener("click", function () {
-    element.textContent =
-      element.textContent === "Added" ? "Add to cart" : "Added";
-  });
-});
+if (new URLSearchParams(window.location.search).get("login")) {
+  openModal();
+  switchTab("login");
+}

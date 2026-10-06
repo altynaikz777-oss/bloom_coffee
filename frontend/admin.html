@@ -2,96 +2,98 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#2b1f1d" />
-    <title>Admin Sign In | Bloom Coffee</title>
+    <title>Bloom Coffee - Admin</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="admin-page">
-    <div class="admin-topbar">
-      <a class="admin-brand" href="home.html">Bloom Coffee</a>
-      <a class="admin-home-link" href="home.html">Back to the shop</a>
+  <body>
+
+    <header>
+      <a href="home.html" class="logo">Bloom Coffee</a>
+      <nav
+        style="
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <a href="home.html">Home</a>
+        <a href="menu.html" class="active">Menu</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html">Cart</a>
+        <a>
+          <img
+            style="width: 28px; opacity: 0.9; padding-top: 4px"
+            src="./images/1000_F_433520193_85OMr4384m2WI8I0vxvge9dcvlm2xqqv.png"
+            alt=""
+        /></a>
+      </nav>
+    </header>
+
+
+    <div class="page-header">
+      <h1>Admin: Menu</h1>
+      <p>Edit or delete products. Changes are saved to the database.</p>
     </div>
 
-    <main class="admin-layout">
-      <section class="admin-intro" aria-label="Bloom Coffee staff access">
-        <div class="admin-intro-content">
-          <p class="admin-eyebrow">BLOOM COFFEE / STAFF</p>
-          <p class="admin-intro-title">
-            Willow Street,<br />behind the counter.
-          </p>
-          <span class="admin-intro-rule" aria-hidden="true"></span>
-          <p class="admin-intro-note">
-            Private access for the people who keep the coffee flowing.
-          </p>
-        </div>
-      </section>
 
-      <section class="admin-form-panel" aria-labelledby="admin-title">
-        <div id="login-view">
-          <p class="admin-eyebrow admin-eyebrow-dark">STAFF PORTAL</p>
-          <h1 id="admin-title">Sign in</h1>
-          <p class="admin-form-description">
-            Use your authorized admin account to continue.
-          </p>
+    <div class="menu-tabs" id="adminTabs">
+      <a href="#" data-category="all" class="active">All</a>
+      <a href="#" data-category="coffee">Coffee</a>
+      <a href="#" data-category="tea">Tea</a>
+      <a href="#" data-category="pastries">Pastries</a>
+    </div>
 
-          <form id="admin-login-form" novalidate>
-            <div class="admin-field">
-              <label for="admin-email">Email address</label>
-              <input
-                id="admin-email"
-                name="email"
-                type="email"
-                autocomplete="username"
-                inputmode="email"
-                required
-              />
-            </div>
-            <div class="admin-field">
-              <label for="admin-password">Password</label>
-              <input
-                id="admin-password"
-                name="password"
-                type="password"
-                autocomplete="current-password"
-                required
-              />
-            </div>
-            <p
-              id="login-message"
-              class="admin-message"
-              role="status"
-              aria-live="polite"
-            ></p>
-            <button class="admin-submit" type="submit">
-              Sign in <span aria-hidden="true">&rarr;</span>
-            </button>
-          </form>
-        </div>
 
-        <div id="signed-in-view" hidden>
-          <p class="admin-eyebrow admin-eyebrow-dark">STAFF PORTAL</p>
-          <h1 id="signed-in-title">You are signed in</h1>
-          <p class="admin-form-description">
-            Authenticated as <strong id="signed-in-email"></strong>.
-          </p>
-          <p
-            id="session-message"
-            class="admin-message"
-            role="status"
-            aria-live="polite"
-          ></p>
-          <button id="admin-sign-out" class="admin-submit" type="button">
-            Sign out <span aria-hidden="true">&rarr;</span>
-          </button>
-        </div>
+    <section class="cards-section" style="padding-top: 0">
+      <p id="adminMessage" class="admin-message"></p>
+      <div class="grid" id="productGrid"></div>
+    </section>
 
-        <p class="admin-panel-footer">
-          Bloom Coffee <span aria-hidden="true">/</span> Willow Street
+
+    <div class="modal-overlay" id="editModal">
+      <div class="modal-box">
+        <button class="modal-close" id="editClose" aria-label="Close">&times;</button>
+        <form class="modal-form" id="editForm">
+          <label for="editName">Name</label>
+          <input type="text" id="editName" required />
+
+          <label for="editPrice">Price</label>
+          <input type="number" id="editPrice" step="0.01" min="0" required />
+
+          <label for="editDescription">Description</label>
+          <input type="text" id="editDescription" />
+
+          <label for="editImage">Image (path or URL)</label>
+          <input type="text" id="editImage" />
+
+          <button type="submit" class="btn-add" id="editSave">Save changes</button>
+          <p class="modal-message" id="editMessage"></p>
+        </form>
+      </div>
+    </div>
+
+
+    <footer>
+      <div>
+        <h3>Bloom Coffee</h3>
+        <p class="footer-col">
+          Small-batch coffee and morning pastries on Willow<br />Street.
         </p>
-      </section>
-    </main>
-
-    <script src="admin.js" defer></script>
+      </div>
+      <div class="footer-col">
+        <p>18 Willow Street</p>
+        <p>Open daily, 7:00am–5:00pm</p>
+        <p>hello@bloomcoffee.com</p>
+        <p>Instagram</p>
+      </div>
+      <div class="footer-col">
+        <a href="homepage.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html">Cart</a>
+      </div>
+    </footer>
+    <script src="admin.js"></script>
   </body>
 </html>
