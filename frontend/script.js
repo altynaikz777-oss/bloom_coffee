@@ -39,14 +39,14 @@ async function loadHomeProducts() {
 
 loadHomeProducts();
 
-function filterProducts(category) {
-  document.querySelectorAll(".card").forEach((card) => {
-    card.style.display = card.dataset.category === category ? "block" : "none";
-  });
-}
-filterProducts("coffee");
-filterProducts("tea");
-filterProducts("pastries");
+// function filterProducts(category) {
+//   document.querySelectorAll(".card").forEach((card) => {
+//     card.style.display = card.dataset.category === category ? "block" : "none";
+//   });
+// }
+// filterProducts("coffee");
+// filterProducts("tea");
+// filterProducts("pastries");
 ///////
 
 function openModal() {
