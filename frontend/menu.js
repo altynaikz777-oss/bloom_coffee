@@ -10,6 +10,7 @@ let currentCategory = "coffee";
 function renderCard(product) {
   const card = document.createElement("div");
   card.className = "card";
+  card.dataset.category = product.category;
 
   const img = document.createElement("img");
   img.src = product.image || "./images/espresso.jpg";
@@ -33,7 +34,6 @@ function renderCard(product) {
   price.className = "price";
   price.textContent = "$" + Number(product.price).toFixed(2);
 
-  // "Add to cart" button
   const add = document.createElement("a");
   add.href = "#";
   add.className = "btn-add";
@@ -42,14 +42,12 @@ function renderCard(product) {
   add.addEventListener("click", function (e) {
     e.preventDefault();
 
-    // 1. Is the user logged in? (login saves "bloomUser" in localStorage)
     if (localStorage.getItem("bloomUser") === null) {
       alert("Please log in first!");
       window.location.href = "home.html?login=1";
       return;
     }
 
-    // 2. Put the product in the cart (addToCart is in cart.js)
     addToCart(product);
     add.textContent = "Added";
   });

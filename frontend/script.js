@@ -1,4 +1,4 @@
-async function products() {
+async function loadHomeProducts() {
   const grid = document.querySelector(".grid");
   if (!grid) return;
 
@@ -31,18 +31,25 @@ async function products() {
         switchTab("login");
         return;
       }
-
       addToCart(productList[index]);
       button.textContent = "Added";
     });
   });
 }
 
-products();
+loadHomeProducts();
+
+function filterProducts(category) {
+  document.querySelectorAll(".card").forEach((card) => {
+    card.style.display = card.dataset.category === category ? "block" : "none";
+  });
+}
+filterProducts("coffee");
+filterProducts("tea");
+filterProducts("pastries");
 ///////
 
 function openModal() {
-  // if the user is already logged in, the icon works as "log out"
   const savedUser = localStorage.getItem("bloomUser");
   if (savedUser !== null) {
     const user = JSON.parse(savedUser);
@@ -57,7 +64,7 @@ function openModal() {
 
 function logout() {
   localStorage.removeItem("bloomUser");
-  localStorage.removeItem("bloomCart"); // the cart belongs to this user, so clear it
+  localStorage.removeItem("bloomCart");
   window.location.href = "home.html";
 }
 
@@ -152,7 +159,6 @@ async function handleLogin(event) {
   }
 }
 
-// ?login=1 in the address -> open the login window right away
 if (new URLSearchParams(window.location.search).get("login")) {
   openModal();
   switchTab("login");

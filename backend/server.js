@@ -139,50 +139,6 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  const accountParts = req.url.split("/");
-  const accountId = Number(accountParts[2]);
-  const hasAccountId =
-    accountParts[1] === "accounts" &&
-    accountParts.length === 3 &&
-    Number.isInteger(accountId) &&
-    accountId > 0;
-
-  if (hasAccountId && req.method === "PUT") {
-    try {
-      const body = await parse.json(req);
-      const { rows } = await pool.query(
-        `UPDATE accounts SET username = $1 WHERE id = $2 RETURNING id, username, role`,
-        [body.username || null, accountId],
-      );
-
-      if (rows.length === 0) {
-        return sendJSON(res, 404, { error: "User not found" });
-      }
-
-      return sendJSON(res, 200, { message: "User updated", user: rows[0] });
-    } catch (err) {
-      console.error("Error updating user:", err);
-      return sendJSON(res, 500, { error: "Server error" });
-    }
-  }
-
-  if (hasAccountId && req.method === "DELETE") {
-    try {
-      const { rowCount } = await pool.query(
-        "DELETE FROM accounts WHERE id = $1",
-        [accountId],
-      );
-
-      if (rowCount === 0) {
-        return sendJSON(res, 404, { error: "User not found" });
-      }
-
-      return sendJSON(res, 200, { message: "User deleted" });
-    } catch (err) {
-      console.error("Error deleting user:", err);
-      return sendJSON(res, 500, { error: "Server error" });
-    }
-  }
 
   if (req.url === "/products" && req.method === "GET") {
     try {
@@ -224,33 +180,6 @@ const server = http.createServer(async (req, res) => {
     productParts.length === 3 &&
     Number.isInteger(productId) &&
     productId > 0;
-
-  if (hasProductId && req.method === "PUT") {
-    try {
-      const body = await parse.json(req);
-      const { name, price, description, image } = body;
-
-      const result = await pool.query(
-        "UPDATE products SET name = $1, price = $2, description = $3, image = $4 WHERE id = $5 RETURNING *",
-        [name, price, description, image, productId],
-      );
-
-      if (result.rows.length === 0) {
-        return sendJSON(res, 404, { error: "Product not found" });
-      }
-
-      return sendJSON(res, 200, {
-        message: "Product updated",
-        product: result.rows[0],
-      });
-    } catch (err) {
-      console.error("Error updating product:", err);
-      return sendJSON(res, 500, { error: "Server error" });
-    }
-  }
-
-  if (hasProductId && req.method === "DELETE") {
-  }
 
   if (hasProductId && req.method === "PUT") {
     const admin = checkAdmin(req);

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- Header / Navigation -->
+
     <header>
       <a href="home.html" class="logo">Bloom Coffee</a>
       <nav
@@ -21,6 +21,7 @@
         <a href="menu.html" class="active">Menu</a>
         <a href="contact.html">Contact</a>
         <a href="cart.html">Cart</a>
+        <a href="order.html">Orders</a>
         <a>
           <img
             style="width: 28px; opacity: 0.9; padding-top: 4px"
@@ -30,13 +31,13 @@
       </nav>
     </header>
 
-    <!-- Admin Header -->
+
     <div class="page-header">
       <h1>Admin: Menu</h1>
       <p>Edit or delete products. Changes are saved to the database.</p>
     </div>
 
-    <!-- Category filter -->
+
     <div class="menu-tabs" id="adminTabs">
       <a href="#" data-category="all" class="active">All</a>
       <a href="#" data-category="coffee">Coffee</a>
@@ -44,13 +45,13 @@
       <a href="#" data-category="pastries">Pastries</a>
     </div>
 
-    <!-- Products (rendered by admin.js) -->
+
     <section class="cards-section" style="padding-top: 0">
       <p id="adminMessage" class="admin-message"></p>
       <div class="grid" id="productGrid"></div>
     </section>
 
-    <!-- Edit modal -->
+
     <div class="modal-overlay" id="editModal">
       <div class="modal-box">
         <button class="modal-close" id="editClose" aria-label="Close">&times;</button>
@@ -73,7 +74,7 @@
       </div>
     </div>
 
-    <!-- Footer -->
+
     <footer>
       <div>
         <h3>Bloom Coffee</h3>
@@ -85,7 +86,15 @@
         <p>18 Willow Street</p>
         <p>Open daily, 7:00am–5:00pm</p>
         <p>hello@bloomcoffee.com</p>
-        <p>Instagram</p>
+        <a href="https://www.instagram.com/bloomroom.cafe/" target="_blank" rel="noopener noreferrer">
+          <p>Instagram</p>
+        </a>
+        <a href="https://api.whatsapp.com/send/?phone=77057774440&text&type=phone_number&app_absent=0&utm_source=ig" target="_blank" rel="noopener noreferrer">
+          <p>WhatsApp</p>
+        </a>
+        <a href="https://www.threads.com/@bloomroom.cafe?xmt=AQG0Fzpx8PsKDEuo88Lr_hNz3aJ8oqMNNfnIL5SgJDZgBr0">
+          <p>Threads</p>
+        </a>
       </div>
       <div class="footer-col">
         <a href="homepage.html">Home</a>

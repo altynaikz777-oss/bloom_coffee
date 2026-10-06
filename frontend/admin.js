@@ -95,9 +95,12 @@ function renderCard(product) {
   deleteBtn.className = "btn-delete";
   deleteBtn.textContent = "Delete";
   deleteBtn.addEventListener("click", () => deleteProduct(product));
- 
+ const priceandbuttons = document.createElement("div");
+  priceandbuttons.className = "price-and-buttons";
+  priceandbuttons.append(actions , footer);
+  
   actions.append(editBtn, deleteBtn);
-  content.append(title, desc, footer, actions);
+  content.append(title, desc, priceandbuttons);
   card.append(img, content);
   return card;
 }
@@ -139,7 +142,7 @@ async function deleteProduct(product) {
   }
 }
  
-// editing products from database
+
 function openEdit(product) {
   editingId = product.id;
   editName.value = product.name;
