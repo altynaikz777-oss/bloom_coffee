@@ -3,7 +3,6 @@ import pg from "pg";
 import parse from "co-body";
 import http from "node:http";
 import bcrypt from "bcrypt";
-import { error } from "node:console";
 
 const { Pool } = pg;
 
@@ -14,6 +13,11 @@ const pool = new Pool({
   port: process.env.PORT,
   password: String(process.env.DB_PASSWORD || ""),
 });
+
+function sendJSON(res, statusCode, data) {
+  res.statusCode = statusCode;
+  res.end(JSON.stringify(data));
+}
 
 function checkAdmin(req) {
   const adminPassword = req.headers["x-admin-password"];
@@ -44,16 +48,13 @@ const server = http.createServer(async (req, res) => {
     return res.end();
   }
 
-  // --- Users ---
   if (req.url === "/read" && req.method === "GET") {
     try {
       const data = await getUsers();
-      res.statusCode = 200;
-      return res.end(JSON.stringify(data));
+      return sendJSON(res, 200, data);
     } catch (err) {
       console.error("Error fetching users:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
@@ -63,8 +64,7 @@ const server = http.createServer(async (req, res) => {
       const { username, password, email } = body;
 
       if (!username || !password || !email) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({ error: "Fill in all fields!" }));
+        return sendJSON(res, 400, { error: "Fill in all fields!" });
       }
 
       const checkUser = await pool.query(
@@ -73,10 +73,9 @@ const server = http.createServer(async (req, res) => {
       );
 
       if (checkUser.rows.length > 0) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({
+        return sendJSON(res, 400, {
           error: "User with that email already exists!",
-        }));
+        });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -86,15 +85,13 @@ const server = http.createServer(async (req, res) => {
         [username, hashedPassword, email],
       );
 
-      res.statusCode = 201;
-      return res.end(JSON.stringify({
+      return sendJSON(res, 201, {
         message: "Welcome to our cafe!",
         user: result.rows[0],
-      }));
+      });
     } catch (err) {
       console.error("Error during registration:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
@@ -104,10 +101,9 @@ const server = http.createServer(async (req, res) => {
       const { email, password } = body;
 
       if (!email || !password) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({
+        return sendJSON(res, 400, {
           error: "Write your email and password!",
-        }));
+        });
       }
 
       const userResult = await pool.query(
@@ -116,22 +112,19 @@ const server = http.createServer(async (req, res) => {
       );
 
       if (userResult.rows.length === 0) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({
+        return sendJSON(res, 400, {
           error: "This email hasn't been registered!",
-        }));
+        });
       }
 
       const user = userResult.rows[0];
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({ error: "Wrong password!" }));
+        return sendJSON(res, 400, { error: "Wrong password!" });
       }
 
-      res.statusCode = 200;
-      return res.end(JSON.stringify({
+      return sendJSON(res, 200, {
         message: "Successfully logged in!",
         user: {
           id: user.id,
@@ -139,83 +132,27 @@ const server = http.createServer(async (req, res) => {
           email: user.email,
           role: user.role,
         },
-      }));
+      });
     } catch (err) {
       console.error("Error during login:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
-  // --- Accounts ---
-  const accountParts = req.url.split("/");
-  const accountId = Number(accountParts[2]);
-  const hasAccountId =
-    accountParts[1] === "accounts" &&
-    accountParts.length === 3 &&
-    Number.isInteger(accountId) &&
-    accountId > 0;
 
-  if (hasAccountId && req.method === "PUT") {
-    try {
-      const body = await parse.json(req);
-      const { rows } = await pool.query(
-        `UPDATE accounts SET username = $1 WHERE id = $2 RETURNING id, username, role`,
-        [body.username || null, accountId],
-      );
-
-      if (rows.length === 0) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "User not found" }));
-      }
-
-      res.statusCode = 200;
-      return res.end(JSON.stringify({ message: "User updated", user: rows[0] }));
-    } catch (err) {
-      console.error("Error updating user:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
-    }
-  }
-
-  if (hasAccountId && req.method === "DELETE") {
-    try {
-      const { rowCount } = await pool.query(
-        "DELETE FROM accounts WHERE id = $1",
-        [accountId],
-      );
-
-      if (rowCount === 0) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "User not found" }));
-      }
-
-      res.statusCode = 200;
-      return res.end(JSON.stringify({ message: "User deleted" }));
-    } catch (err) {
-      console.error("Error deleting user:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
-    }
-  }
-
-  // --- Products ---
   if (req.url === "/products" && req.method === "GET") {
     try {
       const result = await pool.query("SELECT * FROM products ORDER BY id");
-      res.statusCode = 200;
-      return res.end(JSON.stringify(result.rows));
+      return sendJSON(res, 200, result.rows);
     } catch (err) {
       console.error("Error fetching products:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
   if (req.url === "/products" && req.method === "POST") {
     if (!checkAdmin(req)) {
-      res.statusCode = 403;
-      return res.end(JSON.stringify({ error: "Admin access required" }));
+      return sendJSON(res, 403, { error: "Admin access required" });
     }
     try {
       const body = await parse.json(req);
@@ -226,15 +163,13 @@ const server = http.createServer(async (req, res) => {
         [name, category, price, description, image],
       );
 
-      res.statusCode = 201;
-      return res.end(JSON.stringify({
+      return sendJSON(res, 201, {
         message: "Product added",
         product: result.rows[0],
-      }));
+      });
     } catch (err) {
       console.error("Error adding product:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
@@ -247,9 +182,9 @@ const server = http.createServer(async (req, res) => {
     productId > 0;
 
   if (hasProductId && req.method === "PUT") {
-    if (!checkAdmin(req)) {
-      res.statusCode = 403;
-      return res.end(JSON.stringify({ error: "Admin access required" }));
+    const admin = checkAdmin(req);
+    if (!admin) {
+      return sendJSON(res, 403, { error: "Admin access required" });
     }
     try {
       const body = await parse.json(req);
@@ -261,26 +196,22 @@ const server = http.createServer(async (req, res) => {
       );
 
       if (result.rows.length === 0) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "Product not found" }));
+        return sendJSON(res, 404, { error: "Product not found" });
       }
 
-      res.statusCode = 200;
-      return res.end(JSON.stringify({
+      return sendJSON(res, 200, {
         message: "Product updated",
         product: result.rows[0],
-      }));
+      });
     } catch (err) {
       console.error("Error updating product:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }));
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
   if (hasProductId && req.method === "DELETE") {
     if (!checkAdmin(req)) {
-      res.statusCode = 403;
-    return res.end(JSON.stringify({ error: "Admin access required" }));
+      return sendJSON(res, 403, { error: "Admin access required" });
     }
     try {
       const result = await pool.query("DELETE FROM products WHERE id = $1", [
@@ -288,21 +219,17 @@ const server = http.createServer(async (req, res) => {
       ]);
 
       if (result.rowCount === 0) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "Product not found" }))
+        return sendJSON(res, 404, { error: "Product not found" });
       }
 
-      res.statusCode = 200;
-      return res.end(JSON.stringify({ message: "Product deleted!" }))
+      return sendJSON(res, 200, { message: "Product deleted" });
     } catch (err) {
       console.error("Error deleting product:", err);
-      res.statusCode = 500;
-      return res.end(JSON.stringify({ error: "Server error" }))
+      return sendJSON(res, 500, { error: "Server error" });
     }
   }
 
-  res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "Route not found" }))
+  return sendJSON(res, 404, { error: "Route not found!" });
 });
 
 server.listen(3000, () => {
