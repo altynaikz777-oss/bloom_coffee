@@ -10,6 +10,7 @@ let currentCategory = "coffee";
 function renderCard(product) {
   const card = document.createElement("div");
   card.className = "card";
+  card.dataset.category = product.category;
 
   const img = document.createElement("img");
   img.src = product.image || "./images/espresso.jpg";
